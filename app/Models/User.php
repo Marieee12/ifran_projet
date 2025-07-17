@@ -18,9 +18,16 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'role_id',
+        'nom_utilisateur',
+        'prenom',
+        'nom',
         'email',
         'password',
+        'telephone',
+        'date_creation',
+        'derniere_connexion',
+        'est_actif',
     ];
 
     /**
@@ -42,7 +49,42 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+            'date_creation' => 'datetime',
+            'derniere_connexion' => 'datetime',
+            'est_actif' => 'boolean',
+            ];
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    // Relations 1:1 polymorphiques (un utilisateur est un étudiant OU un enseignant OU un coordinateur OU un parent)
+    // On utilise hasOne ici car c'est une relation 1:1 où la clé étrangère est dans la table enfant (etudiant, enseignant, etc.)
+    public function etudiant()
+    {
+        return $this->hasOne(Etudiant::class, 'user_id');
+    }
+
+    public function enseignant()
+    {
+        return $this->hasOne(Enseignant::class, 'user_id');
+    }
+
+    public function coordinateur()
+    {
+        return $this->hasOne(Coordinateur::class, 'user_id');
+    }
+
+    public function parentModel() // Renommé pour éviter le conflit avec le mot-clé PHP 'parent'
+    {
+        return $this->hasOne(ParentModel::class, 'user_id');
+    }
+
+    // Relation: Un utilisateur peut avoir saisi plusieurs présences
+    public function presencesSaisies()
+    {
+        return $this->hasMany(Presence::class, 'saisi_par_user_id');
     }
 }
