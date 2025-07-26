@@ -9,23 +9,19 @@ class Role extends Model
 {
     use HasFactory;
 
-
     protected $table = 'roles';
-
-
     protected $primaryKey = 'id';
-
 
     protected $fillable = [
         'nom_role',
     ];
 
-   
-    public $timestamps = false; // La table 'roles' n'a pas de timestamps dans notre migration
+    // SUPPRIMER OU COMMENTER LA LIGNE SUIVANTE :
+    // public $timestamps = false; // <-- Cette ligne doit être supprimée ou commentée
 
     // Relation: Un rôle peut être attribué à plusieurs utilisateurs
     public function users()
     {
-        return $this->hasMany(User::class, 'role_id'); // 'role_id' est la clé étrangère dans la table 'users'
+        return $this->hasMany(User::class, 'role_id');
     }
 }

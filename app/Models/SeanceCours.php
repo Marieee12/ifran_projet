@@ -11,7 +11,7 @@ class SeanceCours extends Model
 
     protected $table = 'seances_cours';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Pas de timestamps pour cette table
+    public $timestamps = false; // Si vous n'avez pas ajouté les timestamps dans la migration
 
     protected $fillable = [
         'id_matiere',
@@ -24,45 +24,50 @@ class SeanceCours extends Model
         'type_cours',
         'salle',
         'est_annulee',
-        'date_report',
-        'heure_report_debut',
-        'heure_report_fin',
-        'raison_annulation_report',
+        'raison_annulation', // Ajouté
+        'id_seance_precedente', // Ajouté
     ];
 
     protected $casts = [
         'date_seance' => 'date',
-        'date_report' => 'date',
         'est_annulee' => 'boolean',
     ];
 
-    // Relation: Une séance de cours appartient à une matière
+    // Relations existantes...
     public function matiere()
     {
         return $this->belongsTo(Matiere::class, 'id_matiere');
     }
 
-    // Relation: Une séance de cours appartient à une classe
     public function classe()
     {
         return $this->belongsTo(Classe::class, 'id_classe');
     }
 
-    // Relation: Une séance de cours est donnée par un enseignant (peut être null)
     public function enseignant()
     {
         return $this->belongsTo(Enseignant::class, 'id_enseignant');
     }
 
-    // Relation: Une séance de cours est gérée par un coordinateur (peut être null)
     public function coordinateur()
     {
         return $this->belongsTo(Coordinateur::class, 'id_coordinateur');
     }
 
-    // Relation: Une séance de cours a plusieurs présences
     public function presences()
     {
         return $this->hasMany(Presence::class, 'id_seance_cours');
+    }
+
+    // Nouvelle relation auto-référencée : La séance qu'elle remplace
+    public function seancePrecedente()
+    {
+        return $this->belongsTo(SeanceCours::class, 'id_seance_precedente');
+    }
+
+    // Optionnel : La ou les séances qui ont remplacé celle-ci (si elle est l'originale annulée)
+    public function seancesSuivantes()
+    {
+        return $this->hasMany(SeanceCours::class, 'id_seance_precedente');
     }
 }

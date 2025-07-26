@@ -19,7 +19,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $inscriptionActive = (User::count() === 0);
+        return view('auth.register', compact('inscriptionActive'));
     }
 
     /**
@@ -29,14 +30,17 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        if (User::count() > 0) {
+            return redirect()->route('login')->withErrors(['register' => 'L’inscription est désactivée.']);
+        }
+
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'role_id' => 1,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -45,6 +49,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('dashboard');
     }
 }

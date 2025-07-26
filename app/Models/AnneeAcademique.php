@@ -11,7 +11,7 @@ class AnneeAcademique extends Model
 
     protected $table = 'annees_academiques';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Pas de timestamps pour cette table
+    public $timestamps = false;
 
     protected $fillable = [
         'nom_annee',
@@ -20,7 +20,6 @@ class AnneeAcademique extends Model
         'est_actuelle',
     ];
 
-    // Relation: Une année académique peut avoir plusieurs classes
     public function classes()
     {
         return $this->hasMany(Classe::class, 'id_annee_academique');

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_utilisateur')->constrained('users')->onDelete('cascade')->onUpdate('cascade')->unique();
             $table->string('telephone', 20)->nullable();
-            $table->string('lien_avec_etudiant', 50)->nullable();
             $table->timestamps();
         });
     }
