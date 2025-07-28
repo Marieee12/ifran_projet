@@ -17,6 +17,12 @@
                 </a>
             </li>
             <li class="mb-2">
+                <a href="" class="flex items-center py-3 px-8 text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition-colors">
+                    <i class="fas fa-book mr-3"></i>
+                    Coordinateurs
+                </a>
+            </li>
+            <li class="mb-2">
                 <a href="{{ route('etudiants.index') }}" class="flex items-center py-3 px-8 text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition-colors">
                     <i class="fas fa-user-graduate mr-3"></i>
                     Étudiants
@@ -32,12 +38,6 @@
                 <a href="{{ route('parents.index') }}" class="flex items-center py-3 px-8 text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition-colors">
                     <i class="fas fa-book mr-3"></i>
                     Parents
-                </a>
-            </li>
-            <li class="mb-2">
-                <a href="" class="flex items-center py-3 px-8 text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition-colors">
-                    <i class="fas fa-book mr-3"></i>
-                    Coordinateurs
                 </a>
             </li>
             <li class="mb-2">

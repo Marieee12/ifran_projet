@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter un Utilisateur - IFRAN TRACK</title>
-    <!-- Tailwind CSS CDN (pour le développement rapide) -->
-    <!-- Pour la production, assurez-vous d'avoir Tailwind CSS compilé localement
-         et remplacez cette ligne par :
-         @vite(['resources/css/app.css', 'resources/js/app.js']) (si vous utilisez Vite)
-         ou
-         <link href="{{ asset('css/app.css') }}" rel="stylesheet"> (si vous utilisez Laravel Mix)
-    -->
+         @vite(['resources/css/app.css', 'resources/js/app.js'])
+         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -107,7 +103,7 @@
                 </div>
             </div>
 
-            <!-- Champs Mot de passe -->
+            <!-- Champs Mdp -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
@@ -115,7 +111,7 @@
                 </div>
             </div>
 
-            <!-- Champs spécifiques Étudiant -->
+            <!-- Champ Étudiant -->
             <div id="etudiantFields" style="display: none;" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -140,7 +136,7 @@
                 </div>
             </div>
 
-            <!-- Champs spécifiques Enseignant -->
+            <!-- Champs Enseignant -->
             <div id="enseignantFields" style="display: none;" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -150,7 +146,7 @@
                 </div>
             </div>
 
-            <!-- Champs spécifiques Parent -->
+            <!-- Champs Parent -->
             <div id="parentFields" style="display: none;" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -165,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- Champs spécifiques Coordinateur -->
+            <!-- Champs Coordinateur -->
             <div id="coordinateurFields" style="display: none;" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -180,7 +176,7 @@
                 </div>
             </div>
 
-            <!-- Bouton de soumission -->
+
             <div class="flex justify-end pt-4">
                 <button type="submit" class="form-button-custom">
                     <i class="fas fa-user-plus mr-2"></i> Créer l'utilisateur
@@ -197,7 +193,7 @@
             const parentFields = document.getElementById('parentFields');
             const coordinateurFields = document.getElementById('coordinateurFields');
 
-            // Fonction pour masquer tous les champs spécifiques
+            // Fonction pour cacher tous les champs spécifiques
             function hideAllFields() {
                 etudiantFields.style.display = 'none';
                 enseignantFields.style.display = 'none';
@@ -211,7 +207,7 @@
                 // Récupérer le texte du rôle sélectionné
                 const selectedRole = roleSelect.options[roleSelect.selectedIndex].text;
 
-                // Afficher les champs appropriés selon le rôle
+                // Afficher les bons champs selon le rôle
                 if (selectedRole.toLowerCase().includes('etudiant')) {
                     etudiantFields.style.display = 'block';
                 } else if (selectedRole.toLowerCase().includes('enseignant')) {

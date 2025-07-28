@@ -15,11 +15,6 @@ class Role extends Model
     protected $fillable = [
         'nom_role',
     ];
-
-    // SUPPRIMER OU COMMENTER LA LIGNE SUIVANTE :
-    // public $timestamps = false; // <-- Cette ligne doit être supprimée ou commentée
-
-    // Relation: Un rôle peut être attribué à plusieurs utilisateurs
     public function users()
     {
         return $this->hasMany(User::class, 'role_id');

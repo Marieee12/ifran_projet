@@ -11,7 +11,7 @@ class SeanceCours extends Model
 
     protected $table = 'seances_cours';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Si vous n'avez pas ajouté les timestamps dans la migration
+    public $timestamps = false;
 
     protected $fillable = [
         'id_matiere',
@@ -24,8 +24,8 @@ class SeanceCours extends Model
         'type_cours',
         'salle',
         'est_annulee',
-        'raison_annulation', // Ajouté
-        'id_seance_precedente', // Ajouté
+        'raison_annulation',
+        'id_seance_precedente',
     ];
 
     protected $casts = [
@@ -33,7 +33,7 @@ class SeanceCours extends Model
         'est_annulee' => 'boolean',
     ];
 
-    // Relations existantes...
+
     public function matiere()
     {
         return $this->belongsTo(Matiere::class, 'id_matiere');
@@ -59,13 +59,11 @@ class SeanceCours extends Model
         return $this->hasMany(Presence::class, 'id_seance_cours');
     }
 
-    // Nouvelle relation auto-référencée : La séance qu'elle remplace
     public function seancePrecedente()
     {
         return $this->belongsTo(SeanceCours::class, 'id_seance_precedente');
     }
 
-    // Optionnel : La ou les séances qui ont remplacé celle-ci (si elle est l'originale annulée)
     public function seancesSuivantes()
     {
         return $this->hasMany(SeanceCours::class, 'id_seance_precedente');

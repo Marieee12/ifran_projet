@@ -11,7 +11,7 @@ class JustificationAbsence extends Model
 
     protected $table = 'justifications_absences';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Pas de timestamps pour cette table
+    public $timestamps = false;
 
     protected $fillable = [
         'id_presence',
@@ -25,13 +25,11 @@ class JustificationAbsence extends Model
         'date_justification' => 'datetime',
     ];
 
-    // Relation: Une justification d'absence appartient à une présence
     public function presence()
     {
         return $this->belongsTo(Presence::class, 'id_presence');
     }
 
-    // Relation: Une justification d'absence a été justifiée par un coordinateur
     public function justifieeParCoordinateur()
     {
         return $this->belongsTo(Coordinateur::class, 'justifiee_par_id_coordinateur');

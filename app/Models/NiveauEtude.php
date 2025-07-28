@@ -11,14 +11,13 @@ class NiveauEtude extends Model
 
     protected $table = 'niveaux_etude';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Pas de timestamps pour cette table
+    public $timestamps = false;
 
     protected $fillable = [
         'nom_niveau',
         'description',
     ];
 
-    // Relation: Un niveau d'étude peut avoir plusieurs classes
     public function classes()
     {
         return $this->hasMany(Classe::class, 'id_niveau_etude');

@@ -11,14 +11,14 @@ class Filiere extends Model
 
     protected $table = 'filieres';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Pas de timestamps pour cette table
+    public $timestamps = false;
 
     protected $fillable = [
         'nom_filiere',
         'description',
     ];
 
-    // Relation: Une filière peut avoir plusieurs classes
+    // Une filière peut avoir plusieurs classes
     public function classes()
     {
         return $this->hasMany(Classe::class, 'id_filiere');

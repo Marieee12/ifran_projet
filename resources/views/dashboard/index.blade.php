@@ -1,18 +1,11 @@
-
-
 {{-- <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IFRAN TRACK - Dashboard Admin</title>
-    <!-- Tailwind CSS CDN -->
-    <!-- Pour la production, assurez-vous d'avoir Tailwind CSS compilé localement
-         et remplacez cette ligne par :
-         @vite(['resources/css/app.css', 'resources/js/app.js']) (si vous utilisez Vite)
-         ou
-         <link href="{{ asset('css/app.css') }}" rel="stylesheet"> (si vous utilisez Laravel Mix)
-    -->
+         @vite(['resources/css/app.css', 'resources/js/app.js'])
+         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -87,7 +80,8 @@
         </div>
     </aside>
     <main class="flex-1 p-8 overflow-y-auto">
-            <!-- En-tête de la Page -->
+
+
             <header class="flex items-center justify-between bg-white p-6 rounded-xl shadow-md mb-8">
                 <h1 class="text-3xl font-bold text-gray-800">Tableau de Bord Administrateur</h1>
                 <div class="flex items-center space-x-4">
@@ -106,11 +100,11 @@
                 </div>
             </header>
 
-            <!-- Section 1: Vue d'Ensemble Rapide -->
+            <!-- Section1-->
             <section class="mb-8">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Vue d'Ensemble Rapide</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Carte 1: Utilisateurs Totaux -->
+                    <!-- Carte1 Utilisateurs Totaux -->
                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between transition-transform duration-200 hover:scale-105">
                         <div>
                             <p class="text-gray-500 text-sm">Utilisateurs Totaux</p>
@@ -120,7 +114,7 @@
                             <i class="fas fa-users text-2xl"></i>
                         </div>
                     </div>
-                    <!-- Carte 2: Classes Actives -->
+                    <!-- Carte2 Classes Actives -->
                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between transition-transform duration-200 hover:scale-105">
                         <div>
                             <p class="text-gray-500 text-sm">Classes Actives</p>
@@ -130,7 +124,7 @@
                             <i class="fas fa-chalkboard text-2xl"></i>
                         </div>
                     </div>
-                    <!-- Carte 3: Séances de Cours Planifiées -->
+                    <!-- Carte3 Séances de Cours Planifiées -->
                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between transition-transform duration-200 hover:scale-105">
                         <div>
                             <p class="text-gray-500 text-sm">Séances de Cours Planifiées</p>
@@ -140,7 +134,7 @@
                             <i class="fas fa-calendar-check text-2xl"></i>
                         </div>
                     </div>
-                    <!-- Carte 4: Étudiants "Droppés" (Total) -->
+                    <!-- Carte4 Étudiants "Droppés" Total -->
                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between transition-transform duration-200 hover:scale-105">
                         <div>
                             <p class="text-gray-500 text-sm">Étudiants "Droppés" (Total)</p>
@@ -153,7 +147,7 @@
                 </div>
             </section>
 
-            <!-- Section 2: Accès Rapide aux Gestions -->
+            <!-- Section2 Accès Rapide aux Gestions -->
             <section class="mb-8">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Accès Rapide aux Gestions</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -178,7 +172,7 @@
                 </div>
             </section>
 
-            <!-- Section 3: Activités Récentes / Journal -->
+            <!-- Section3 Activités Récentes -->
             <section class="mb-8">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Activités Récentes / Journal</h2>
                 <div class="bg-white p-6 rounded-xl shadow-md">
@@ -198,7 +192,7 @@
                 </div>
             </section>
 
-            <!-- Section 4: Alertes et Notifications Système -->
+            <!-- Section4 Alertes et Notifications Système -->
             <section>
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Alertes et Notifications Système</h2>
                 <div class="bg-white p-6 rounded-xl shadow-md">

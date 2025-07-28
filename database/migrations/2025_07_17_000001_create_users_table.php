@@ -12,7 +12,6 @@ class CreateUsersTable extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            // Suppression des champs inutiles
             $table->id();
             $table->foreignId('role_id')->constrained('roles')->onDelete('restrict')->onUpdate('cascade');
             $table->string('nom_utilisateur', 50)->unique();

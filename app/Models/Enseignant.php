@@ -11,20 +11,18 @@ class Enseignant extends Model
 
     protected $table = 'enseignants';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Pas de timestamps pour cette table
+    public $timestamps = false;
 
     protected $fillable = [
         'user_id',
         'specialite',
     ];
 
-    // Relation: Un enseignant est un utilisateur
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relation: Un enseignant donne plusieurs séances de cours
     public function seancesCours()
     {
         return $this->hasMany(SeanceCours::class, 'id_enseignant');

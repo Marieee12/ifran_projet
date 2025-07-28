@@ -23,17 +23,8 @@ return new class extends Migration
             $table->enum('type_cours', ['Presentiel', 'E-learning', 'Workshop'])->nullable(false);
             $table->string('salle', 50)->nullable();
             $table->boolean('est_annulee')->default(false)->nullable(false);
-            $table->text('raison_annulation')->nullable(); // Nouvelle colonne pour la raison d'annulation
-            $table->foreignId('id_seance_precedente')->nullable()->constrained('seances_cours')->onDelete('set null')->onUpdate('cascade'); // Nouvelle FK auto-référencée
-            // Suppression des anciennes colonnes de report :
-            // $table->date('date_report')->nullable();
-            // $table->time('heure_report_debut')->nullable();
-            // $table->time('heure_report_fin')->nullable();
-            // $table->text('raison_annulation_report')->nullable();
-            // $table->timestamps(); // Si vous voulez created_at/updated_at pour cette table
-
-            // Contrainte CHECK (si votre SGBD la supporte et si vous la gérez manuellement)
-            // CONSTRAINT chk_seance_responsable CHECK (id_enseignant IS NOT NULL OR id_coordinateur IS NOT NULL)
+            $table->text('raison_annulation')->nullable(); 
+            $table->foreignId('id_seance_precedente')->nullable()->constrained('seances_cours')->onDelete('set null')->onUpdate('cascade');
         });
     }
 

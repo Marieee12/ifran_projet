@@ -11,7 +11,7 @@ class Etudiant extends Model
 
     protected $table = 'etudiants';
     protected $primaryKey = 'id';
-    public $timestamps = false; // Pas de timestamps pour cette table
+    public $timestamps = false;
 
     protected $fillable = [
         'user_id',
@@ -26,25 +26,21 @@ class Etudiant extends Model
         'date_naissance' => 'date',
     ];
 
-    // Relation: Un étudiant est un utilisateur
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relation: Un étudiant appartient à une classe
     public function classe()
     {
         return $this->belongsTo(Classe::class, 'id_classe');
     }
 
-    // Relation: Un étudiant a plusieurs présences
     public function presences()
     {
         return $this->hasMany(Presence::class, 'id_etudiant');
     }
 
-    // Relation N:M: Un étudiant peut avoir plusieurs parents
     public function parents()
     {
         return $this->belongsToMany(ParentModel::class, 'parents_etudiants', 'id_etudiant', 'id_parent');

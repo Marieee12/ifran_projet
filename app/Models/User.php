@@ -60,8 +60,6 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
-    // Relations 1:1 polymorphiques (un utilisateur est un étudiant OU un enseignant OU un coordinateur OU un parent)
-    // On utilise hasOne ici car c'est une relation 1:1 où la clé étrangère est dans la table enfant (etudiant, enseignant, etc.)
     public function etudiant()
     {
         return $this->hasOne(Etudiant::class, 'user_id');
@@ -77,12 +75,11 @@ class User extends Authenticatable
         return $this->hasOne(Coordinateur::class, 'user_id');
     }
 
-    public function parentModel() // Renommé pour éviter le conflit avec le mot-clé PHP 'parent'
+    public function parentModel()
     {
         return $this->hasOne(ParentModel::class, 'user_id');
     }
 
-    // Relation: Un utilisateur peut avoir saisi plusieurs présences
     public function presencesSaisies()
     {
         return $this->hasMany(Presence::class, 'saisi_par_user_id');
