@@ -13,7 +13,7 @@
         <tbody>
             @forelse($niveaux as $niveau)
             <tr class="hover:bg-gray-50">
-                <td class="py-2 px-4 border-b">{{ $niveau->nom }}</td>
+                <td class="py-2 px-4 border-b">{{ $niveau->nom_niveau }}</td>
                 <td class="py-2 px-4 border-b">
                     <a href="{{ route('niveaux_etude.edit', $niveau) }}" class="text-blue-500 hover:underline mr-2">Modifier</a>
                     <form action="{{ route('niveaux_etude.destroy', $niveau) }}" method="POST" style="display:inline">

@@ -10,20 +10,17 @@ class Cours extends Model
     use HasFactory;
 
     protected $table = 'seances_cours';
+    public $timestamps = false;
 
     protected $fillable = [
         'id_classe',
         'id_matiere',
         'id_enseignant',
-        'date_cours',
+        'date_seance',
         'heure_debut',
         'heure_fin',
         'salle',
         'description'
-    ];
-
-    protected $casts = [
-        'date_cours' => 'date',
     ];
 
     public function classe()

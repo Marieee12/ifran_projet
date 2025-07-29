@@ -128,13 +128,13 @@
                                 {{ $cours->heure_debut }} - {{ $cours->heure_fin }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $cours->classe->nom }}
+                                {{ $cours->classe->nom_classe_complet ?? 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $cours->matiere->nom }}
+                                {{ $cours->matiere->nom_matiere ?? 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $cours->enseignant->nom }}
+                                {{ $cours->enseignant?->user?->nom ?? 'Non assigné' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full

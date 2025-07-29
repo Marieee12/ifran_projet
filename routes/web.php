@@ -71,6 +71,16 @@ Route::get('/admin-simple', function() {
     return 'Admin non trouvé';
 })->name('admin.simple');
 
+// Test pour le coordinateur
+Route::get('/test-coordinateur', function() {
+    $user = \App\Models\User::where('email', 'coordinateur@ifran.com')->first();
+    if ($user) {
+        Auth::login($user);
+        return redirect()->route('coordinateur.index');
+    }
+    return 'Coordinateur non trouvé';
+})->name('test.coordinateur');
+
 // Route de debug pour vérifier l'utilisateur connecté
 Route::get('/debug-user', function() {
     if (Auth::check()) {
@@ -108,6 +118,10 @@ Route::middleware(['auth', 'role:coordinateur pédagogique'])->prefix('coordinat
     Route::get('/justifications', [CoordinateurController::class, 'justifications'])->name('coordinateur.justifications');
     Route::post('/justification/{justification}/valider', [CoordinateurController::class, 'validerJustification'])->name('coordinateur.justification.valider');
     Route::post('/justification/{justification}/refuser', [CoordinateurController::class, 'refuserJustification'])->name('coordinateur.justification.refuser');
+
+    // Routes supplémentaires pour le coordinateur
+    Route::get('/absences', [CoordinateurController::class, 'absences'])->name('coordinateur.absences');
+    Route::get('/creer-cours', [CoordinateurController::class, 'creerCours'])->name('coordinateur.creer_cours');
 });
 
 Route::middleware(['auth', 'role:administrateur'])->group(function () {

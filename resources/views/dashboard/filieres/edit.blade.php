@@ -7,7 +7,7 @@
         @method('PUT')
         <div class="mb-4">
             <label class="block text-gray-700 font-semibold mb-2">Nom de la filière</label>
-            <input type="text" name="nom" value="{{ old('nom', $filiere->nom) }}" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <input type="text" name="nom_filiere" value="{{ old('nom_filiere', $filiere->nom_filiere) }}" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         </div>
         <div class="flex justify-end">
             <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">Mettre à jour</button>

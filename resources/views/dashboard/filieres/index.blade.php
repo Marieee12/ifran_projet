@@ -13,7 +13,7 @@
         <tbody>
             @forelse($filieres as $filiere)
             <tr class="hover:bg-gray-50">
-                <td class="py-2 px-4 border-b">{{ $filiere->nom }}</td>
+                <td class="py-2 px-4 border-b">{{ $filiere->nom_filiere }}</td>
                 <td class="py-2 px-4 border-b">
                     <a href="{{ route('filieres.edit', $filiere) }}" class="text-blue-500 hover:underline mr-2">Modifier</a>
                     <form action="{{ route('filieres.destroy', $filiere) }}" method="POST" style="display:inline">

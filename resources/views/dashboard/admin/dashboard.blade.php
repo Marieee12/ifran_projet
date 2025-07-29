@@ -74,7 +74,7 @@
             </a>
 
             <!-- Gérer les Années Académiques -->
-            <a href="{{ route('annees_academiques.create') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
+            <a href="{{ route('annees_academiques.index') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
                 <div class="flex flex-col items-center text-center">
                     <div class="bg-purple-100 p-4 rounded-full mb-4 group-hover:bg-purple-200 transition-colors duration-200">
                         <i class="fas fa-calendar-alt text-2xl text-purple-600"></i>

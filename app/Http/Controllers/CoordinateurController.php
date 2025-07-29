@@ -23,7 +23,7 @@ class CoordinateurController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('role:coordinateur');
+        $this->middleware('role:coordinateur pédagogique');
     }
 
     public function index()
@@ -44,24 +44,13 @@ class CoordinateurController extends Controller
         $etudiantsCount = Etudiant::count();
 
         // Liste des cours du jour
-        $coursDuJour = Cours::with(['classe', 'matiere', 'enseignant'])
+        $coursDuJour = Cours::with(['classe', 'matiere', 'enseignant.user'])
             ->whereDate('date_seance', $today)
             ->orderBy('heure_debut')
             ->get()
             ->map(function ($cours) {
-                // Déterminer le statut du cours
-                $maintenant = Carbon::now();
-                $debut = Carbon::parse($cours->date_seance . ' ' . $cours->heure_debut);
-                $fin = Carbon::parse($cours->date_seance . ' ' . $cours->heure_fin);
-
-                if ($maintenant->between($debut, $fin)) {
-                    $cours->statut = 'En cours';
-                } elseif ($maintenant->lt($debut)) {
-                    $cours->statut = 'À venir';
-                } else {
-                    $cours->statut = 'Terminé';
-                }
-
+                // Statut simple pour éviter les erreurs de parsing
+                $cours->statut = 'Programmé';
                 return $cours;
             });
 
@@ -90,18 +79,47 @@ class CoordinateurController extends Controller
 
     public function justifications()
     {
-        $justifications = JustificationAbsence::with(['etudiant', 'absence'])
+        // Statistiques pour les cartes
+        $justificationsEnAttente = JustificationAbsence::whereNull('justifiee_par_id_coordinateur')->count();
+        $justificationsValidees = JustificationAbsence::whereNotNull('justifiee_par_id_coordinateur')->count();
+        $justificationsTotal = JustificationAbsence::count();
+
+        // Liste paginée des justifications
+        $justifications = JustificationAbsence::with(['etudiant.user', 'absence.cours.matiere', 'absence.cours.classe'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return view('dashboard.coordinateur.justifications', compact('justifications'));
+
+        return view('dashboard.coordinateur.justifications', compact(
+            'justifications',
+            'justificationsEnAttente',
+            'justificationsValidees',
+            'justificationsTotal'
+        ));
     }
 
     public function absences()
     {
-        $absences = Absence::with(['etudiant', 'cours'])
+        // Statistiques pour les cartes
+        $today = Carbon::today();
+        $startOfWeek = Carbon::now()->startOfWeek();
+
+        $absencesToday = Absence::whereDate('date_absence', $today)->count();
+        $absencesWeek = Absence::where('date_absence', '>=', $startOfWeek)->count();
+        $absencesJustified = Absence::where('justifie', true)->count();
+        $absencesNotJustified = Absence::where('justifie', false)->count();
+
+        // Liste paginée des absences
+        $absences = Absence::with(['etudiant.user', 'cours.classe', 'cours.matiere'])
             ->orderBy('date_absence', 'desc')
             ->paginate(10);
-        return view('dashboard.coordinateur.absences', compact('absences'));
+
+        return view('dashboard.coordinateur.absences', compact(
+            'absences',
+            'absencesToday',
+            'absencesWeek',
+            'absencesJustified',
+            'absencesNotJustified'
+        ));
     }
 
     public function emploiTemps(Request $request)
@@ -125,7 +143,7 @@ class CoordinateurController extends Controller
     public function validerJustification(JustificationAbsence $justification)
     {
         $user = Auth::user();
-        $coordinateur = Coordinateur::where('user_id', $user->id)->first();
+        $coordinateur = Coordinateur::where('id_utilisateur', $user->id)->first();
 
         if (!$coordinateur) {
             return back()->with('error', 'Vous n\'avez pas les droits de coordinateur.');

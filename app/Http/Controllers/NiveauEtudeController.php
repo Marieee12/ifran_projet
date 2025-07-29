@@ -18,8 +18,8 @@ class NiveauEtudeController extends Controller
     }
     public function store(Request $request)
     {
-        $request->validate(['nom' => 'required|string|max:255']);
-        NiveauEtude::create(['nom' => $request->nom]);
+        $request->validate(['nom_niveau' => 'required|string|max:255']);
+        NiveauEtude::create(['nom_niveau' => $request->nom_niveau]);
         return redirect()->route('niveaux_etude.index')->with('success', 'Niveau d\'étude ajouté !');
     }
     public function edit(NiveauEtude $niveauEtude)
@@ -28,8 +28,8 @@ class NiveauEtudeController extends Controller
     }
     public function update(Request $request, NiveauEtude $niveauEtude)
     {
-        $request->validate(['nom' => 'required|string|max:255']);
-        $niveauEtude->update(['nom' => $request->nom]);
+        $request->validate(['nom_niveau' => 'required|string|max:255']);
+        $niveauEtude->update(['nom_niveau' => $request->nom_niveau]);
         return redirect()->route('niveaux_etude.index')->with('success', 'Niveau d\'étude modifié !');
     }
     public function destroy(NiveauEtude $niveauEtude)
