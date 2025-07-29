@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SeanceCours;
+use App\Models\Cours;
 use App\Models\Classe;
 use App\Models\Matiere;
 use App\Models\Enseignant;
@@ -226,5 +227,84 @@ class EmploiTempsController extends Controller
         }
 
         return redirect()->back()->with('success', 'Séance ' . $validated['action'] . 'ée avec succès');
+    }
+
+    /**
+     * Affichage de l'agenda pour le coordinateur
+     */
+    public function agenda(Request $request)
+    {
+        // Récupérer le mois et l'année depuis la requête
+        $mois = $request->get('mois', now()->month);
+        $annee = $request->get('annee', now()->year);
+        $classeId = $request->get('classe_id');
+
+        // Créer une date de début du mois
+        $dateDebut = Carbon::createFromDate($annee, $mois, 1)->startOfMonth();
+        $dateFin = $dateDebut->copy()->endOfMonth();
+
+        // Construire la requête des cours
+        $query = Cours::with(['classe', 'matiere', 'enseignant.user'])
+            ->whereBetween('date_seance', [$dateDebut, $dateFin]);
+
+        if ($classeId) {
+            $query->where('id_classe', $classeId);
+        }
+
+        $cours = $query->orderBy('date_seance')->orderBy('heure_debut')->get();
+
+        // Récupérer toutes les classes pour le filtre
+        $classes = Classe::all();
+
+        // Grouper les cours par date
+        $coursParDate = $cours->groupBy('date_seance');
+
+        // Générer les données du calendrier
+        $calendrier = $this->genererCalendrier($dateDebut, $coursParDate);
+
+        return view('dashboard.coordinateur.emploi-temps.agenda', compact(
+            'calendrier',
+            'coursParDate',
+            'classes',
+            'mois',
+            'annee',
+            'classeId',
+            'dateDebut'
+        ));
+    }
+
+    /**
+     * Générer la structure du calendrier
+     */
+    private function genererCalendrier($dateDebut, $coursParDate)
+    {
+        $calendrier = [];
+        $premierJour = $dateDebut->copy()->startOfMonth();
+        $dernierJour = $dateDebut->copy()->endOfMonth();
+
+        // Ajuster pour commencer le calendrier un lundi
+        $dateActuelle = $premierJour->copy()->startOfWeek(Carbon::MONDAY);
+
+        // Générer 6 semaines pour couvrir tout le mois
+        for ($semaine = 0; $semaine < 6; $semaine++) {
+            $calendrier[$semaine] = [];
+
+            for ($jour = 0; $jour < 7; $jour++) {
+                $estDansLeMois = $dateActuelle->month == $premierJour->month;
+                $coursDate = $dateActuelle->format('Y-m-d');
+                $coursJour = $coursParDate->get($coursDate, collect());
+
+                $calendrier[$semaine][$jour] = [
+                    'date' => $dateActuelle->copy(),
+                    'est_dans_le_mois' => $estDansLeMois,
+                    'cours' => $coursJour,
+                    'nombre_cours' => $coursJour->count()
+                ];
+
+                $dateActuelle->addDay();
+            }
+        }
+
+        return $calendrier;
     }
 }

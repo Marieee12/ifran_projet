@@ -76,13 +76,13 @@
                 </div>
             </a>
 
-            <a href="{{ route('coordinateur.emploi_temps') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
+            <a href="{{ route('coordinateur.agenda') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
                 <div class="flex flex-col items-center text-center">
                     <div class="bg-blue-100 p-4 rounded-full mb-4 group-hover:bg-blue-200 transition-colors duration-200">
                         <i class="fas fa-calendar-alt text-2xl text-blue-600"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Emploi du Temps</h3>
-                    <p class="text-sm text-gray-600">Gérer les emplois du temps des classes</p>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Agenda</h3>
+                    <p class="text-sm text-gray-600">Visualiser l'emploi du temps en calendrier</p>
                 </div>
             </a>
 
