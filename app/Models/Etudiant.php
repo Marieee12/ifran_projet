@@ -11,38 +11,27 @@ class Etudiant extends Model
 
     protected $table = 'etudiants';
     protected $primaryKey = 'id';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'user_id',
-        'numero_etudiant',
+        'classe_id',
         'date_naissance',
         'adresse',
-        'photo_profil_url',
-        'id_classe',
-    ];
-
-    protected $casts = [
-        'date_naissance' => 'date',
+        'telephone'
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function classe()
     {
-        return $this->belongsTo(Classe::class, 'id_classe');
+        return $this->belongsTo(Classe::class);
     }
 
-    public function presences()
-    {
-        return $this->hasMany(Presence::class, 'id_etudiant');
-    }
-
-    public function parents()
-    {
-        return $this->belongsToMany(ParentModel::class, 'parents_etudiants', 'id_etudiant', 'id_parent');
-    }
+    protected $casts = [
+        'date_naissance' => 'date',
+    ];
 }

@@ -18,11 +18,16 @@ class Presence extends Model
         'id_etudiant',
         'statut_presence',
         'date_saisie',
-        'saisi_par_user_id',
+        'saisi_par_id_utilisateur',
+        'saisie_dans_delai',
+        'derniere_modification',
+        'modifie_par_id_utilisateur',
     ];
 
     protected $casts = [
         'date_saisie' => 'datetime',
+        'saisie_dans_delai' => 'boolean',
+        'derniere_modification' => 'datetime',
     ];
 
     public function seanceCours()
@@ -37,11 +42,17 @@ class Presence extends Model
 
     public function saisieParUser()
     {
-        return $this->belongsTo(User::class, 'saisi_par_user_id');
+        return $this->belongsTo(User::class, 'saisi_par_id_utilisateur');
+    }
+
+    public function modifieParUser()
+    {
+        return $this->belongsTo(User::class, 'modifie_par_id_utilisateur');
     }
 
     public function justificationAbsence()
     {
-        return $this->hasOne(JustificationAbsence::class, 'id_presence');
+        return $this->hasOne(JustificationAbsence::class)->where('id_etudiant', $this->id_etudiant)
+                    ->where('id_seance_cours', $this->id_seance_cours);
     }
 }

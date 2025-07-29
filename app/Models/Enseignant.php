@@ -14,13 +14,13 @@ class Enseignant extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
+        'id_utilisateur',
         'specialite',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'id_utilisateur');
     }
 
     public function seancesCours()

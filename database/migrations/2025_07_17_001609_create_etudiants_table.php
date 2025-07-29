@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('etudiants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_utilisateur')->constrained('users')->onDelete('cascade')->onUpdate('cascade')->unique(); // Unique 1:1
-            $table->string('numero_etudiant', 50)->unique()->nullable(false);
-            $table->date('date_naissance')->nullable();
-            $table->text('adresse')->nullable();
-            $table->string('photo_profil_url', 255)->nullable();
-            $table->foreignId('id_classe')->constrained('classes')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('classe_id')->constrained()->onDelete('restrict');
+            $table->date('date_naissance');
+            $table->text('adresse');
+            $table->string('telephone');
+            $table->boolean('est_actif')->default(true);
             $table->timestamps();
         });
     }

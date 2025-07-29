@@ -44,10 +44,6 @@
             <a href="{{ route('admin.dashboard') }}" class="form-button-secondary">
                 <i class="fas fa-arrow-left mr-2"></i> Retour au Dashboard
             </a>
-        <div>
-            <label for="name">Nom</label>
-            <input type="text" name="name" id="name" required>
-        </div>
         @if (session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-4" role="alert">
                 <strong class="font-bold">Succès!</strong>
@@ -74,40 +70,71 @@
         <form method="POST" action="{{ route('dashboard.utilisateur.store') }}" class="space-y-6">
             @csrf
 
-            <!-- Champ Rôle -->
-            <div>
-                <label for="role_id" class="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
-                <select name="role_id" id="role_id" required class="form-select-custom">
-                    <option value="">Sélectionner un rôle</option>
-                    @foreach($roles as $role)
-                        <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
-                            {{ $role->nom_role }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <!-- Champ Nom -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                    <input type="text" name="name" id="name" value="{{ old('name') }}" required class="form-input-custom" placeholder="Ex: Jean Dupont">
+            <!-- Sélection du Rôle -->
+            <div class="relative">
+                <label for="role_id" class="block text-sm font-semibold text-gray-700">Rôle de l'utilisateur</label>
+                <div class="mt-1 relative">
+                    <select name="role_id" id="role_id" required
+                            class="form-select-custom pl-10 appearance-none">
+                        <option value="">Sélectionner un rôle</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                                {{ $role->nom_role }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-user-tag text-gray-400"></i>
+                    </div>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
                 </div>
             </div>
 
-            <!-- Champs Email-->
+            <!-- Informations Personnelles -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email') }}" required class="form-input-custom" placeholder="Ex: jean.dupont@ifran.com">
+                <div class="relative">
+                    <label for="nom" class="block text-sm font-semibold text-gray-700">Nom</label>
+                    <input type="text" name="nom" id="nom" value="{{ old('nom') }}"
+                           class="form-input-custom" placeholder="Ex: Dupont"
+                           required>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none pt-6">
+                        <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <label for="prenom" class="block text-sm font-semibold text-gray-700">Prénom</label>
+                    <input type="text" name="prenom" id="prenom" value="{{ old('prenom') }}"
+                           class="form-input-custom" placeholder="Ex: Jean"
+                           required>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none pt-6">
+                        <i class="fas fa-user text-gray-400"></i>
+                    </div>
                 </div>
             </div>
 
-            <!-- Champs Mdp -->
+            <!-- Champs Email et Mot de passe -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-                    <input type="password" name="password" id="password" required class="form-input-custom" placeholder="Minimum 8 caractères">
+                <div class="relative">
+                    <label for="email" class="block text-sm font-semibold text-gray-700">Email</label>
+                    <input type="email" name="email" id="email" value="{{ old('email') }}"
+                           class="form-input-custom pl-10" placeholder="Ex: jean.dupont@ifran.com"
+                           required>
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none pt-6">
+                        <i class="fas fa-envelope text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <label for="password" class="block text-sm font-semibold text-gray-700">Mot de passe</label>
+                    <input type="password" name="password" id="password"
+                           class="form-input-custom pl-10" placeholder="Minimum 8 caractères"
+                           required>
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none pt-6">
+                        <i class="fas fa-lock text-gray-400"></i>
+                    </div>
                 </div>
             </div>
 

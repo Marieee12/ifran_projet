@@ -1,25 +1,7 @@
-{{-- <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFRAN TRACK - Dashboard Admin</title>
-         @vite(['resources/css/app.css', 'resources/js/app.js'])
-         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome pour les icônes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
-</head> --}}
-
 @extends('layouts.app')
 @section('content')
-<div class="bg-gray-100 antialiased flex h-screen">
-    <aside class="w-64 bg-gray-800 text-gray-200 flex flex-col rounded-tr-xl rounded-br-xl shadow-lg">
+<div class="bg-gray-100 antialiased flex min-h-screen">
+    <aside class="w-64 bg-gray-800 text-gray-200 flex flex-col min-h-screen shadow-lg sticky top-0">
         <div class="p-6 text-2xl font-bold text-white border-b border-gray-700">
             IFRAN TRACK
         </div>
@@ -29,18 +11,37 @@
                 <i class="fas fa-tachometer-alt mr-3"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="{{ route('dashboard.utilisateur.liste') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                <i class="fas fa-users mr-3"></i>
-                <span>Liste des Utilisateurs</span>
-            </a>
-            <a href="{{ route('dashboard.utilisateur.create') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                <i class="fas fa-user-plus mr-3"></i>
-                <span>Ajouter Utilisateur</span>
-            </a>
-            <a href="#" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
-                <i class="fas fa-user-tag mr-3"></i>
-                <span>Gestion Rôles</span>
-            </a>
+            <div class="space-y-2">
+                <div class="text-xs font-semibold uppercase text-gray-400 mt-4 mb-2">Gestion des Utilisateurs</div>
+                <a href="{{ route('dashboard.utilisateur.liste') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <i class="fas fa-users mr-3"></i>
+                    <span>Tous les Utilisateurs</span>
+                </a>
+                <a href="{{ route('dashboard.utilisateur.create') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <i class="fas fa-user-plus mr-3"></i>
+                    <span>Ajouter Utilisateur</span>
+                </a>
+                <a href="{{ route('coordinateurs.index') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <i class="fas fa-user-tie mr-3"></i>
+                    <span>Liste des Coordinateurs</span>
+                </a>
+                <a href="{{ route('enseignants.index') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <i class="fas fa-chalkboard-teacher mr-3"></i>
+                    <span>Liste des Enseignants</span>
+                </a>
+                <a href="{{ route('etudiants.index') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <i class="fas fa-user-graduate mr-3"></i>
+                    <span>Liste des Étudiants</span>
+                </a>
+                <a href="{{ route('parents.index') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <i class="fas fa-user-friends mr-3"></i>
+                    <span>Liste des Parents</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                    <i class="fas fa-user-tag mr-3"></i>
+                    <span>Gestion Rôles</span>
+                </a>
+            </div>
             <a href="{{ route('annees_academiques.create') }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors duration-200">
                 <i class="fas fa-calendar-alt mr-3"></i>
                 <span>Gestion Années Académiques</span>
@@ -218,7 +219,5 @@
     </div>
 </div>
     @endsection
-{{-- </body>
-</html> --}}
 
 

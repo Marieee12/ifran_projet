@@ -3,80 +3,90 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Enseignant;
+use App\Models\User;
 use App\Models\SeanceCours;
-use App\Models\Classe;
-use App\Models\Matiere;
-use Carbon\Carbon;
+use App\Models\Presence;
+use App\Models\AnneeAcademique;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class EnseignantController extends Controller
 {
-    /**
-     * Affiche le tableau de bord de l'enseignant.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index()
+    public function dashboard()
     {
-        $user = Auth::user();
-        $prochainesSeances = [
-            [
-                'matiere' => 'Algorithmique',
-                'classe' => 'B2 INFO 2024-2025',
-                'date' => '30/07/2025',
-                'heure' => '09H00 - 11H00',
-                'id_seance' => 101,
-                'can_saisir' => true,
-            ],
-            [
-                'matiere' => 'Marketing Digital',
-                'classe' => 'B2 COMM 2024-2025',
-                'date' => '31/07/2025',
-                'heure' => '14H00 - 16H00',
-                'id_seance' => 102,
-                'can_saisir' => false,
-            ],
-            [
-                'matiere' => 'Base de Données',
-                'classe' => 'B1 INFO 2024-2025',
-                'date' => '01/08/2025',
-                'heure' => '10H00 - 12H00',
-                'id_seance' => 103,
-                'can_saisir' => true,
-            ],
-        ];
+        try {
+            $user = Auth::user();
+            Log::info('Tentative d\'accès au dashboard enseignant', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'role_id' => $user->role_id,
+                'route' => request()->route()->getName()
+            ]);
 
-        // --- Section: Présences (Exemple pour la table) ---
-        $presencesExemple = [
-            ['nom' => 'Toure Myriam', 'present' => true, 'retard' => false, 'absent' => false],
-            ['nom' => 'Kone Noah', 'present' => false, 'retard' => true, 'absent' => false],
-            ['nom' => 'Kone Yoleine', 'present' => false, 'retard' => false, 'absent' => true],
-        ];
+            $enseignant = $user->enseignant;
+            if (!$enseignant) {
+                Log::error('Utilisateur ' . $user->id . ' n\'a pas de profil enseignant associé');
+                return redirect()->route('welcome')->with('error', 'Profil enseignant non trouvé');
+            }
 
-        // --- Section: Étudiants droppés (Exemple) ---
-        $etudiantsDroppesExemple = [
-            ['initiales' => 'TM', 'bg_color' => 'bg-blue-200', 'text_color' => 'text-blue-800', 'nom_complet' => 'Toure Myriam', 'matiere' => 'HTML/CSS', 'pourcentage' => '70%'],
-            ['initiales' => 'KN', 'bg_color' => 'bg-green-200', 'text_color' => 'text-green-800', 'nom_complet' => 'Kone Noah', 'matiere' => 'Laravel', 'pourcentage' => '50%'],
-            ['initiales' => 'KY', 'bg_color' => 'bg-purple-200', 'text_color' => 'text-purple-800', 'nom_complet' => 'Kone Yoleine', 'matiere' => 'PHP', 'pourcentage' => '60%'],
-        ];
+            // Récupérer l'année académique actuelle
+            $anneeActuelle = AnneeAcademique::where('est_actuelle', true)->first();
 
-        // --- Section: Sessions effectuées (Exemple) ---
-        $sessionsEffectuees = [
-            ['matiere' => 'HTML/CSS', 'dates' => '17/07 - 22/07'],
-            ['matiere' => 'Laravel', 'dates' => '17/07 - 22/07'],
-            ['matiere' => 'PHP', 'dates' => '17/07 - 22/07'],
-            ['matiere' => 'Docker', 'dates' => '17/07 - 22/07'],
-            ['matiere' => 'Docker', 'dates' => '17/07 - 22/07'],
-        ];
+            // Nombre total de cours de l'enseignant
+            $totalCours = SeanceCours::where('id_enseignant', $enseignant->id)
+                ->join('classes', 'seances_cours.id_classe', '=', 'classes.id')
+                ->where('classes.id_annee_academique', $anneeActuelle->id)
+                ->count();
 
-        // Passage des données à la vue
-        return view('enseignants.index', compact(
-            'user',
-            'prochainesSeances',
-            'presencesExemple',
-            'etudiantsDroppesExemple',
-            'sessionsEffectuees'
-        ));
+            // Cours à venir
+            $coursAVenir = SeanceCours::where('id_enseignant', $enseignant->id)
+                ->whereDate('date_seance', '>=', now())
+                ->join('classes', 'seances_cours.id_classe', '=', 'classes.id')
+                ->where('classes.id_annee_academique', $anneeActuelle->id)
+                ->count();
+
+            Log::info('Dashboard enseignant chargé avec succès pour l\'utilisateur ID: ' . $user->id);
+
+            return view('dashboard.enseignants.dashboard', compact('totalCours', 'coursAVenir'));
+        } catch (\Exception $e) {
+            Log::error('Erreur lors du chargement du dashboard enseignant: ' . $e->getMessage());
+            return redirect()->route('welcome')->with('error', 'Une erreur est survenue');
+        }
+    }
+
+    public function cours()
+    {
+        try {
+            $user = Auth::user();
+            $enseignant = $user->enseignant;
+
+            $cours = SeanceCours::where('id_enseignant', $enseignant->id)
+                ->with(['classe', 'matiere'])
+                ->orderBy('date_seance', 'desc')
+                ->paginate(10);
+
+            return view('dashboard.enseignants.cours', compact('cours'));
+        } catch (\Exception $e) {
+            Log::error('Erreur lors du chargement des cours: ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue');
+        }
+    }
+
+    public function presences()
+    {
+        try {
+            $user = Auth::user();
+            $enseignant = $user->enseignant;
+
+            $seances = SeanceCours::where('id_enseignant', $enseignant->id)
+                ->whereDate('date_seance', '=', now()->toDateString())
+                ->with(['classe', 'matiere'])
+                ->get();
+
+            return view('dashboard.enseignants.presences', compact('seances'));
+        } catch (\Exception $e) {
+            Log::error('Erreur lors du chargement des présences: ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue');
+        }
     }
 }

@@ -20,63 +20,33 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        // Statistiques pour les cartes du tableau de bord
+        $usersCount = User::count();
 
-        // Nombre total d'utilisateurs
-        $totalUsers = User::count();
-        $currentAcademicYearId = AnneeAcademique::where('est_actuelle', true)->value('id');
-        $activeClasses = Classe::when($currentAcademicYearId, function ($query, $currentAcademicYearId) {
-            return $query->where('id_annee_academique', $currentAcademicYearId);
-        })->count();
+        // Récupérer l'année académique actuelle
+        $anneeActuelle = AnneeAcademique::where('est_actuelle', true)->first();
 
-        $plannedSessions = SeanceCours::count(); 
+        // Compter les classes actives de l'année en cours
+        $classesCount = $anneeActuelle
+            ? Classe::where('id_annee_academique', $anneeActuelle->id)->count()
+            : 0;
 
-        $droppedStudents = 0;
+        // Compter les séances de cours planifiées
+        $coursCount = $anneeActuelle
+            ? SeanceCours::join('classes', 'seances_cours.id_classe', '=', 'classes.id')
+                ->whereDate('date_seance', '>=', now())
+                ->where('classes.id_annee_academique', $anneeActuelle->id)
+                ->count()
+            : 0;
 
-        $recentActivities = [
-            [
-                'description' => 'Coordinateur Jean a justifié l\'absence de l\'étudiant Marc pour la séance de Maths.',
-                'time' => 'il y a 5 minutes'
-            ],
-            [
-                'description' => 'Enseignant Marie a relevé les présences pour le cours de Français.',
-                'time' => 'il y a 1 heure'
-            ],
-            [
-                'description' => 'Nouvel utilisateur "Sophie Martin" créé (Rôle: Étudiant).',
-                'time' => 'il y a 3 heures'
-            ],
-            [
-                'description' => 'Séance de Physique annulée par Coordinateur Paul.',
-                'time' => 'hier'
-            ],
-            [
-                'description' => 'Matière "Base de Données" mise à jour.',
-                'time' => 'il y a 2 jours'
-            ],
-        ];
+        // Compter les étudiants "droppés"
+        $droppedStudentsCount = Etudiant::where('est_actif', false)->count();
 
-        $systemAlerts = [
-            [
-                'type' => 'warning',
-                'message' => '5 tentatives de connexion échouées pour l\'utilisateur "admin_test".'
-            ],
-            [
-                'type' => 'info',
-                'message' => 'Espace de stockage des documents justificatifs : 75% utilisé.'
-            ],
-            [
-                'type' => 'success',
-                'message' => 'Mise à jour du système Laravel Breeze disponible.'
-            ],
-        ];
-
-        return view('dashboard.index', compact(
-            'totalUsers',
-            'activeClasses',
-            'plannedSessions',
-            'droppedStudents',
-            'recentActivities',
-            'systemAlerts'
+        return view('dashboard.admin.dashboard', compact(
+            'usersCount',
+            'classesCount',
+            'coursCount',
+            'droppedStudentsCount'
         ));
     }
 }
