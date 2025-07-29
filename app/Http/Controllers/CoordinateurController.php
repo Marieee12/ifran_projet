@@ -211,4 +211,76 @@ class CoordinateurController extends Controller
 
         return back()->with('success', 'Présences enregistrées avec succès');
     }
+
+    // ===== MÉTHODES CRUD POUR LES COURS =====
+
+    public function listeCours()
+    {
+        $cours = Cours::with(['classe', 'matiere', 'enseignant.user'])
+            ->orderBy('date_seance', 'desc')
+            ->orderBy('heure_debut', 'desc')
+            ->paginate(15);
+
+        return view('dashboard.coordinateur.cours.index', compact('cours'));
+    }
+
+    public function storeCours(Request $request)
+    {
+        $request->validate([
+            'id_classe' => 'required|exists:classes,id',
+            'id_matiere' => 'required|exists:matieres,id',
+            'id_enseignant' => 'nullable|exists:enseignants,id',
+            'date_seance' => 'required|date|after_or_equal:today',
+            'heure_debut' => 'required',
+            'heure_fin' => 'required|after:heure_debut',
+            'salle' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:500'
+        ]);
+
+        Cours::create($request->all());
+
+        return redirect()->route('coordinateur.cours.index')
+            ->with('success', 'Cours créé avec succès !');
+    }
+
+    public function editCours(Cours $cours)
+    {
+        $classes = Classe::all();
+        $matieres = Matiere::all();
+        $enseignants = Enseignant::all();
+
+        return view('dashboard.coordinateur.cours.edit', compact('cours', 'classes', 'matieres', 'enseignants'));
+    }
+
+    public function updateCours(Request $request, Cours $cours)
+    {
+        $request->validate([
+            'id_classe' => 'required|exists:classes,id',
+            'id_matiere' => 'required|exists:matieres,id',
+            'id_enseignant' => 'nullable|exists:enseignants,id',
+            'date_seance' => 'required|date',
+            'heure_debut' => 'required',
+            'heure_fin' => 'required|after:heure_debut',
+            'salle' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:500'
+        ]);
+
+        $cours->update($request->all());
+
+        return redirect()->route('coordinateur.cours.index')
+            ->with('success', 'Cours modifié avec succès !');
+    }
+
+    public function deleteCours(Cours $cours)
+    {
+        // Vérifier s'il y a des présences/absences liées
+        if ($cours->presences()->exists()) {
+            return back()->with('error', 'Impossible de supprimer ce cours car il y a des présences/absences enregistrées.');
+        }
+
+        $cours->delete();
+
+        return redirect()->route('coordinateur.cours.index')
+            ->with('success', 'Cours supprimé avec succès !');
+    }
 }

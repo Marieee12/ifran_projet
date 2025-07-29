@@ -122,6 +122,13 @@ Route::middleware(['auth', 'role:coordinateur pédagogique'])->prefix('coordinat
     // Routes supplémentaires pour le coordinateur
     Route::get('/absences', [CoordinateurController::class, 'absences'])->name('coordinateur.absences');
     Route::get('/creer-cours', [CoordinateurController::class, 'creerCours'])->name('coordinateur.creer_cours');
+
+    // Routes CRUD pour les cours
+    Route::get('/cours', [CoordinateurController::class, 'listeCours'])->name('coordinateur.cours.index');
+    Route::post('/cours', [CoordinateurController::class, 'storeCours'])->name('coordinateur.cours.store');
+    Route::get('/cours/{cours}/edit', [CoordinateurController::class, 'editCours'])->name('coordinateur.cours.edit');
+    Route::put('/cours/{cours}', [CoordinateurController::class, 'updateCours'])->name('coordinateur.cours.update');
+    Route::delete('/cours/{cours}', [CoordinateurController::class, 'deleteCours'])->name('coordinateur.cours.delete');
 });
 
 Route::middleware(['auth', 'role:administrateur'])->group(function () {

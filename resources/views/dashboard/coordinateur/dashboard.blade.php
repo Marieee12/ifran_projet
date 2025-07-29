@@ -65,7 +65,7 @@
         </div>
 
         <!-- Actions rapides -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             <a href="{{ route('coordinateur.absences') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
                 <div class="flex flex-col items-center text-center">
                     <div class="bg-red-100 p-4 rounded-full mb-4 group-hover:bg-red-200 transition-colors duration-200">
@@ -86,13 +86,23 @@
                 </div>
             </a>
 
-            <a href="{{ route('coordinateur.creer_cours') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
+            <a href="{{ route('coordinateur.cours.index') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
                 <div class="flex flex-col items-center text-center">
                     <div class="bg-purple-100 p-4 rounded-full mb-4 group-hover:bg-purple-200 transition-colors duration-200">
                         <i class="fas fa-book-open text-2xl text-purple-600"></i>
                     </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Gestion des Cours</h3>
+                    <p class="text-sm text-gray-600">Voir et gérer tous les cours</p>
+                </div>
+            </a>
+
+            <a href="{{ route('coordinateur.creer_cours') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
+                <div class="flex flex-col items-center text-center">
+                    <div class="bg-indigo-100 p-4 rounded-full mb-4 group-hover:bg-indigo-200 transition-colors duration-200">
+                        <i class="fas fa-plus-circle text-2xl text-indigo-600"></i>
+                    </div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Créer un Cours</h3>
-                    <p class="text-sm text-gray-600">Ajouter et planifier de nouveaux cours</p>
+                    <p class="text-sm text-gray-600">Ajouter et planifier un nouveau cours</p>
                 </div>
             </a>
 
