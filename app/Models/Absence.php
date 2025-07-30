@@ -12,31 +12,40 @@ class Absence extends Model
     protected $table = 'presences';
 
     protected $fillable = [
-        'cours_id',
-        'etudiant_id',
-        'present',
-        'justifie',
-        'date_absence'
+        'id_seance_cours',
+        'id_etudiant',
+        'statut_presence',
+        'date_saisie',
+        'saisi_par_id_utilisateur'
     ];
 
     protected $casts = [
-        'present' => 'boolean',
-        'justifie' => 'boolean',
-        'date_absence' => 'date'
+        'date_saisie' => 'datetime'
     ];
 
-    public function cours()
+    // Scope pour récupérer seulement les absences (statut_presence = 'Absent')
+    public function scopeAbsent($query)
     {
-        return $this->belongsTo(Cours::class, 'cours_id');
+        return $query->where('statut_presence', 'Absent');
+    }
+
+    public function seanceCours()
+    {
+        return $this->belongsTo(SeanceCours::class, 'id_seance_cours');
     }
 
     public function etudiant()
     {
-        return $this->belongsTo(Etudiant::class, 'etudiant_id');
+        return $this->belongsTo(Etudiant::class, 'id_etudiant');
     }
 
     public function justification()
     {
-        return $this->hasOne(JustificationAbsence::class, 'absence_id');
+        return $this->hasOne(JustificationAbsence::class, 'id_absence');
+    }
+
+    public function saisieParUtilisateur()
+    {
+        return $this->belongsTo(User::class, 'saisi_par_id_utilisateur');
     }
 }

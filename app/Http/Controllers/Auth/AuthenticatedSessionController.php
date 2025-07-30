@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
             case 4: // Étudiant
                 return redirect('/etudiant/dashboard');
             case 5: // Parent
-                return redirect('/parent/dashboard');
+                return redirect('/parents/dashboard');
             default:
                 return redirect('/')->with('error', 'Rôle non reconnu');
         }

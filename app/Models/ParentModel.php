@@ -15,16 +15,14 @@ class ParentModel extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
-        'nom',
+        'id_utilisateur',
         'telephone',
-        'lien_avec_etudiant',
     ];
 
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'id_utilisateur');
     }
 
     public function etudiants()

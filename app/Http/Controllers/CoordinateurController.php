@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cours;
 use App\Models\Etudiant;
 use App\Models\Absence;
+use App\Models\Presence;
 use App\Models\JustificationAbsence;
 use App\Models\Notification;
 use App\Models\Classe;
@@ -28,33 +29,25 @@ class CoordinateurController extends Controller
 
     public function index()
     {
-        // Récupérer les statistiques pour aujourd'hui
         $today = Carbon::today();
 
-        // Nombre d'absences du jour
         $absencesCount = Absence::whereDate('created_at', $today)->count();
 
-        // Nombre de justifications en attente
         $justificationsCount = JustificationAbsence::whereNull('justifiee_par_id_coordinateur')->count();
 
-        // Nombre de cours aujourd'hui
         $coursCount = Cours::whereDate('date_seance', $today)->count();
 
-        // Nombre total d'étudiants
         $etudiantsCount = Etudiant::count();
 
-        // Liste des cours du jour
         $coursDuJour = Cours::with(['classe', 'matiere', 'enseignant.user'])
             ->whereDate('date_seance', $today)
             ->orderBy('heure_debut')
             ->get()
             ->map(function ($cours) {
-                // Statut simple pour éviter les erreurs de parsing
                 $cours->statut = 'Programmé';
                 return $cours;
             });
 
-        // Récupérer les dernières notifications
         $notifications = Notification::orderBy('created_at', 'desc')
             ->take(5)
             ->get();
@@ -84,7 +77,6 @@ class CoordinateurController extends Controller
         $justificationsValidees = JustificationAbsence::whereNotNull('justifiee_par_id_coordinateur')->count();
         $justificationsTotal = JustificationAbsence::count();
 
-        // Liste paginée des justifications
         $justifications = JustificationAbsence::with(['etudiant.user', 'presence.seanceCours.matiere', 'presence.seanceCours.classe'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -103,14 +95,18 @@ class CoordinateurController extends Controller
         $today = Carbon::today();
         $startOfWeek = Carbon::now()->startOfWeek();
 
-        $absencesToday = Absence::whereDate('date_absence', $today)->count();
-        $absencesWeek = Absence::where('date_absence', '>=', $startOfWeek)->count();
-        $absencesJustified = Absence::where('justifie', true)->count();
-        $absencesNotJustified = Absence::where('justifie', false)->count();
+        $absencesToday = Presence::where('statut_presence', 'Absent')
+            ->whereDate('date_saisie', $today)->count();
+        $absencesWeek = Presence::where('statut_presence', 'Absent')
+            ->where('date_saisie', '>=', $startOfWeek)->count();
+        $absencesJustified = Presence::where('statut_presence', 'Absent')
+            ->whereHas('justificationAbsence')->count();
+        $absencesNotJustified = Presence::where('statut_presence', 'Absent')
+            ->whereDoesntHave('justificationAbsence')->count();
 
-        // Liste paginée des absences
-        $absences = Absence::with(['etudiant.user', 'cours.classe', 'cours.matiere'])
-            ->orderBy('date_absence', 'desc')
+        $absences = Presence::where('statut_presence', 'Absent')
+            ->with(['etudiant.user', 'seanceCours.classe', 'seanceCours.matiere'])
+            ->orderBy('date_saisie', 'desc')
             ->paginate(10);
 
         return view('dashboard.coordinateur.absences', compact(
@@ -187,12 +183,12 @@ class CoordinateurController extends Controller
 
         foreach ($request->presences as $etudiantId => $present) {
             if (!$present) {
-                Absence::create([
-                    'etudiant_id' => $etudiantId,
-                    'cours_id' => $cours->id,
-                    'date_absence' => $cours->date_seance,
-                    'justifie' => false,
-                    'present' => false
+                Presence::create([
+                    'id_etudiant' => $etudiantId,
+                    'id_seance_cours' => $cours->id, // Assumant que $cours est une SeanceCours
+                    'statut_presence' => 'Absent',
+                    'date_saisie' => now(),
+                    'saisi_par_id_utilisateur' => Auth::id()
                 ]);
 
                 // Notifier le parent
@@ -212,7 +208,7 @@ class CoordinateurController extends Controller
         return back()->with('success', 'Présences enregistrées avec succès');
     }
 
-    // ===== MÉTHODES CRUD POUR LES COURS =====
+
 
     public function listeCours()
     {
@@ -238,7 +234,6 @@ class CoordinateurController extends Controller
             'description' => 'nullable|string|max:500'
         ]);
 
-        // Préparer les données avec des valeurs par défaut
         $data = $request->all();
         $data['type_cours'] = $request->input('type_cours', 'Presentiel'); // Valeur par défaut
         $data['id_coordinateur'] = Auth::user()->coordinateur->id ?? null; // ID du coordinateur connecté
@@ -279,7 +274,6 @@ class CoordinateurController extends Controller
 
     public function deleteCours(Cours $cours)
     {
-        // Vérifier s'il y a des présences/absences liées
         if ($cours->presences()->exists()) {
             return back()->with('error', 'Impossible de supprimer ce cours car il y a des présences/absences enregistrées.');
         }
@@ -290,14 +284,14 @@ class CoordinateurController extends Controller
             ->with('success', 'Cours supprimé avec succès !');
     }
 
-    // ===== MÉTHODES AVANCÉES POUR LES ABSENCES =====
+
 
     public function voirPresences(Cours $cours)
     {
         $etudiants = $cours->classe->etudiants()->with('user')->get();
-        $presences = Absence::where('cours_id', $cours->id)
+        $presences = Presence::where('id_seance_cours', $cours->id)
             ->get()
-            ->keyBy('etudiant_id');
+            ->keyBy('id_etudiant');
 
         return view('dashboard.coordinateur.absences.presences', compact('cours', 'etudiants', 'presences'));
     }
@@ -311,8 +305,9 @@ class CoordinateurController extends Controller
             'format' => 'required|in:csv,excel'
         ]);
 
-        // TODO: Implémentation de l'export
-        return back()->with('info', 'Fonctionnalité d\'export en développement.');
+
+
+       return back()->with('info', 'Fonctionnalité d\'export en développement.');
     }
 
     public function statistiquesAbsences(Request $request)
@@ -321,12 +316,12 @@ class CoordinateurController extends Controller
         $dateDebut = $request->get('date_debut', now()->startOfMonth());
         $dateFin = $request->get('date_fin', now()->endOfMonth());
 
-        $query = Absence::with(['etudiant.user', 'cours.classe', 'cours.matiere'])
-            ->where('present', false)
-            ->whereBetween('date_absence', [$dateDebut, $dateFin]);
+        $query = Presence::with(['etudiant.user', 'seanceCours.classe', 'seanceCours.matiere'])
+            ->where('statut_presence', 'Absent')
+            ->whereBetween('date_saisie', [$dateDebut, $dateFin]);
 
         if ($classeId) {
-            $query->whereHas('cours', function($q) use ($classeId) {
+            $query->whereHas('seanceCours', function($q) use ($classeId) {
                 $q->where('id_classe', $classeId);
             });
         }
@@ -337,13 +332,13 @@ class CoordinateurController extends Controller
         // Statistiques
         $stats = [
             'total_absences' => $absences->count(),
-            'absences_justifiees' => $absences->where('justifie', true)->count(),
-            'absences_non_justifiees' => $absences->where('justifie', false)->count(),
-            'etudiants_absents' => $absences->pluck('etudiant_id')->unique()->count(),
-            'absences_par_classe' => $absences->groupBy('cours.classe.nom_classe_complet')->map->count(),
-            'absences_par_matiere' => $absences->groupBy('cours.matiere.nom_matiere')->map->count(),
+            'absences_justifiees' => $absences->whereNotNull('justificationAbsence')->count(),
+            'absences_non_justifiees' => $absences->whereNull('justificationAbsence')->count(),
+            'etudiants_absents' => $absences->pluck('id_etudiant')->unique()->count(),
+            'absences_par_classe' => $absences->groupBy('seanceCours.classe.nom_classe')->map->count(),
+            'absences_par_matiere' => $absences->groupBy('seanceCours.matiere.nom_matiere')->map->count(),
             'absences_par_jour' => $absences->groupBy(function($absence) {
-                return $absence->date_absence->format('Y-m-d');
+                return $absence->date_saisie->format('Y-m-d');
             })->map->count()
         ];
 

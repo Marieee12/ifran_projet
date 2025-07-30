@@ -86,6 +86,15 @@
                         <i class="fas fa-plus mr-3"></i>
                         <span>Créer un cours</span>
                     </a>
+
+                    <!-- Section Rapports et Statistiques -->
+                    <div class="mb-2 mt-4">
+                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Rapports et Analyses</p>
+                    </div>
+                    <a href="{{ route('coordinateur.statistics') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-chart-line mr-3"></i>
+                        <span>Statistiques et Graphiques</span>
+                    </a>
                 </div>
 
             @elseif(auth()->user()->role_id === 3) {{-- Enseignant --}}
@@ -109,7 +118,7 @@
                     </a>
                 </div>
 
-            @elseif(auth()->user()->role_id === 4) {{-- Parent --}}
+            @elseif(auth()->user()->role_id === 5) {{-- Parent --}}
                 <!-- Menu Parent -->
                 <div class="flex-1 px-4 py-6 space-y-2">
                     <a href="{{ route('parent.dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
@@ -124,9 +133,17 @@
                         <i class="fas fa-calendar-times mr-3"></i>
                         <span>Absences</span>
                     </a>
+                    <a href="{{ route('parent.emploi_temps') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-calendar mr-3"></i>
+                        <span>Emploi du temps</span>
+                    </a>
+                    <a href="{{ route('parent.notifications') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-bell mr-3"></i>
+                        <span>Notifications</span>
+                    </a>
                 </div>
 
-            @elseif(auth()->user()->role_id === 5) {{-- Étudiant --}}
+            @elseif(auth()->user()->role_id === 4) {{-- Étudiant --}}
                 <!-- Menu Étudiant -->
                 <div class="flex-1 px-4 py-6 space-y-2">
                     <a href="{{ route('etudiant.dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
@@ -167,9 +184,9 @@
                     @elseif(auth()->user()->role_id === 3)
                         Enseignant
                     @elseif(auth()->user()->role_id === 4)
-                        Parent
-                    @elseif(auth()->user()->role_id === 5)
                         Étudiant
+                    @elseif(auth()->user()->role_id === 5)
+                        Parent
                     @endif
                 </p>
             </div>

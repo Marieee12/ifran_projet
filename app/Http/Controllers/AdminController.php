@@ -10,6 +10,7 @@ use App\Models\Etudiant;
 use App\Models\Presence;
 use App\Models\AnneeAcademique;
 use App\Models\Role;
+use App\Models\ParentModel;
 
 class AdminController extends Controller
 {
@@ -48,5 +49,52 @@ class AdminController extends Controller
             'coursCount',
             'droppedStudentsCount'
         ));
+    }
+
+    /**
+     * Affiche la liste des parents
+     */
+    public function parents()
+    {
+        $parents = ParentModel::with('user')->get();
+        return view('dashboard.admin.parents', compact('parents'));
+    }
+
+    /**
+     * Affiche les enfants d'un parent et permet d'en associer de nouveaux
+     */
+    public function parentEnfants(ParentModel $parent)
+    {
+        $parent->load(['user', 'etudiants.user', 'etudiants.classe']);
+        $etudiants = Etudiant::with(['user', 'classe'])->get();
+
+        return view('dashboard.admin.parent-enfants', compact('parent', 'etudiants'));
+    }
+
+    /**
+     * Associe un enfant à un parent
+     */
+    public function associateEnfant(Request $request, ParentModel $parent)
+    {
+        $request->validate([
+            'etudiant_id' => 'required|exists:etudiants,id'
+        ]);
+
+        // Vérifier si l'association n'existe pas déjà
+        if (!$parent->etudiants()->where('id_etudiant', $request->etudiant_id)->exists()) {
+            $parent->etudiants()->attach($request->etudiant_id);
+            return back()->with('success', 'Enfant associé avec succès !');
+        }
+
+        return back()->with('error', 'Cet enfant est déjà associé à ce parent.');
+    }
+
+    /**
+     * Retire un enfant d'un parent
+     */
+    public function removeEnfant(ParentModel $parent, Etudiant $etudiant)
+    {
+        $parent->etudiants()->detach($etudiant->id);
+        return back()->with('success', 'Association supprimée avec succès !');
     }
 }

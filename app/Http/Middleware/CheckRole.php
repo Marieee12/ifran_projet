@@ -28,11 +28,25 @@ class CheckRole
 
         $requiredRoleId = $roleMap[strtolower($role)] ?? null;
 
+        // Debug explicite
+        if ($role === 'parent') {
+            Log::error('DEBUG PARENT MIDDLEWARE', [
+                'role_param' => $role,
+                'role_lowercase' => strtolower($role),
+                'required_role_id' => $requiredRoleId,
+                'user_role_id' => $request->user()->role_id,
+                'user_role_id_type' => gettype($request->user()->role_id),
+                'comparison' => $request->user()->role_id === 5,
+                'strict_comparison' => (int)$request->user()->role_id === (int)$requiredRoleId
+            ]);
+        }
+
         Log::info('Vérification du rôle', [
             'utilisateur' => $request->user()->email,
             'role_actuel' => $request->user()->role_id,
             'role_requis' => $requiredRoleId,
-            'route' => $request->route()->getName(),
+            'role_param' => $role,
+            'route' => $request->route() ? $request->route()->getName() : 'no-route',
             'uri' => $request->path()
         ]);
 

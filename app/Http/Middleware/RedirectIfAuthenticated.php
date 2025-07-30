@@ -33,7 +33,7 @@ class RedirectIfAuthenticated
                     case 4: // Étudiant
                         return redirect('/etudiant/dashboard');
                     case 5: // Parent
-                        return redirect('/parent/dashboard');
+                        return redirect('/parents/dashboard');
                     default:
                         return redirect('/dashboard');
                 }
