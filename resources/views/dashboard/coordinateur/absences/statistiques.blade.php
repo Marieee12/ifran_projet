@@ -211,36 +211,6 @@
             @endif
         </div>
 
-        <!-- Actions d'export -->
-        <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                <i class="fas fa-download text-indigo-600 mr-2"></i>
-                Exporter les Données
-            </h3>
-            <div class="flex flex-wrap gap-4">
-                <form method="POST" action="{{ route('coordinateur.absences.export') }}" class="inline">
-                    @csrf
-                    <input type="hidden" name="date_debut" value="{{ $dateDebut }}">
-                    <input type="hidden" name="date_fin" value="{{ $dateFin }}">
-                    <input type="hidden" name="classe_id" value="{{ $classeId }}">
-                    <input type="hidden" name="format" value="csv">
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                        <i class="fas fa-file-csv mr-2"></i>Exporter en CSV
-                    </button>
-                </form>
-
-                <form method="POST" action="{{ route('coordinateur.absences.export') }}" class="inline">
-                    @csrf
-                    <input type="hidden" name="date_debut" value="{{ $dateDebut }}">
-                    <input type="hidden" name="date_fin" value="{{ $dateFin }}">
-                    <input type="hidden" name="classe_id" value="{{ $classeId }}">
-                    <input type="hidden" name="format" value="excel">
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                        <i class="fas fa-file-excel mr-2"></i>Exporter en Excel
-                    </button>
-                </form>
-            </div>
-        </div>
     </div>
 </div>
 

@@ -13,18 +13,6 @@
                     </h1>
                     <p class="text-gray-600">Suivi et gestion des absences étudiantes</p>
                 </div>
-                <div class="mt-4 md:mt-0 flex space-x-3">
-                    <a href="{{ route('coordinateur.absences.justifications') }}"
-                       class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
-                        <i class="fas fa-file-alt mr-2"></i>
-                        Justifications en attente
-                    </a>
-                    <a href="{{ route('coordinateur.absences.rapport') }}"
-                       class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                        <i class="fas fa-chart-line mr-2"></i>
-                        Rapports
-                    </a>
-                </div>
             </div>
         </div>
 
@@ -199,9 +187,6 @@
                             @foreach(request()->query() as $key => $value)
                                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                             @endforeach
-                            <button type="submit" class="text-blue-600 hover:text-blue-800">
-                                <i class="fas fa-download mr-1"></i>Exporter
-                            </button>
                         </form>
                     </div>
 

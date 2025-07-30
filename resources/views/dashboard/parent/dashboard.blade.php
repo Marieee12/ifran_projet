@@ -206,11 +206,11 @@
                                 <p class="text-sm text-gray-500">Aucune notification récente</p>
                             @endforelse
                         </div>
-                        <div class="mt-4">
+                        {{-- <div class="mt-4">
                             <a href="{{ route('parent.notifications') }}" class="text-sm text-blue-600 hover:text-blue-500">
                                 Voir toutes les notifications →
                             </a>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -264,7 +264,7 @@
                             </div>
                         </a>
 
-                        <a href="{{ route('parent.notifications') }}" class="group relative bg-white p-6 rounded-lg border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200">
+                        {{-- <a href="{{ route('parent.notifications') }}" class="group relative bg-white p-6 rounded-lg border border-gray-200 hover:border-green-300 hover:shadow-md transition-all duration-200">
                             <div class="flex items-center space-x-3">
                                 <div class="flex-shrink-0">
                                     <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,7 +276,7 @@
                                     <p class="text-xs text-gray-500">Messages et alertes</p>
                                 </div>
                             </div>
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
             </div>

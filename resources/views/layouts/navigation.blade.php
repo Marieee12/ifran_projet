@@ -86,15 +86,6 @@
                         <i class="fas fa-plus mr-3"></i>
                         <span>Créer un cours</span>
                     </a>
-
-                    <!-- Section Rapports et Statistiques -->
-                    <div class="mb-2 mt-4">
-                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Rapports et Analyses</p>
-                    </div>
-                    <a href="{{ route('coordinateur.statistics') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <i class="fas fa-chart-line mr-3"></i>
-                        <span>Statistiques et Graphiques</span>
-                    </a>
                 </div>
 
             @elseif(auth()->user()->role_id === 3) {{-- Enseignant --}}
@@ -137,10 +128,6 @@
                         <i class="fas fa-calendar mr-3"></i>
                         <span>Emploi du temps</span>
                     </a>
-                    <a href="{{ route('parent.notifications') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <i class="fas fa-bell mr-3"></i>
-                        <span>Notifications</span>
-                    </a>
                 </div>
 
             @elseif(auth()->user()->role_id === 4) {{-- Étudiant --}}
@@ -161,12 +148,6 @@
                 </div>
             @endif
         @endif
-                    <i class="fas fa-calendar-alt mr-3"></i>
-                    Année Académique
-                </a>
-            </li>
-            <li class="mb-2">
-                    </div>
 
     <!-- Profil et Déconnexion -->
     <div class="p-4 border-t border-gray-200">
@@ -206,14 +187,5 @@
                 </a>
             </li>
         </ul>
-    </div>
-    <div class="mb-8 px-8">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="w-full flex items-center py-3 px-4 text-gray-700 hover:bg-red-100 hover:text-red-600 transition-colors rounded">
-                <i class="fas fa-sign-out-alt mr-3"></i>
-                Déconnexion
-            </button>
-        </form>
     </div>
 </nav>

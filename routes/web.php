@@ -336,19 +336,9 @@ Route::middleware(['auth', 'role:administrateur'])->group(function () {
     // Coordinateurs
     Route::resource('coordinateurs', App\Http\Controllers\CoordinateurController::class);
 
-    // Parents - commenté car conflit avec les routes parent dashboard
-    // Route::resource('parents', App\Http\Controllers\ParentController::class);
 });
 
 
-
-// Routes pour l'enseignant
-
-// Route::middleware(['auth', 'role:Admin'])->prefix('dashboard')->group(function () {
-
-// });
-
-// Routes déplacées plus haut
 
 Route::middleware(['auth', 'role:parent'])->prefix('parents')->group(function () {
     Route::get('/test', [App\Http\Controllers\ParentController::class, 'test'])->name('parent.test');

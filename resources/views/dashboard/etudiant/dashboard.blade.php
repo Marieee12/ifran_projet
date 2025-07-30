@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header avec informations utilisateur -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+    <div class="bg-gradient-to-r from-blue-600 to-red-600 rounded-xl shadow-lg p-6 text-white">
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-bold">Bonjour, {{ $etudiant->prenom }} ! 👋</h1>
@@ -88,7 +88,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Graphique des présences -->
         <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">📊 Évolution des présences</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Évolution des présences</h3>
             <div class="h-64">
                 <canvas id="presenceChart"></canvas>
             </div>
@@ -96,7 +96,7 @@
 
         <!-- Prochains cours -->
         <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">📅 Prochains cours</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Prochains cours</h3>
             <div class="space-y-3">
                 @forelse($prochainsCours as $cours)
                     <div class="flex items-center p-3 bg-gray-50 rounded-lg">
@@ -135,7 +135,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Actions rapides -->
         <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">⚡ Actions rapides</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Actions rapides</h3>
             <div class="grid grid-cols-2 gap-4">
                 <a href="{{ route('etudiant.absences') }}" class="flex flex-col items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
                     <svg class="w-8 h-8 text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,7 +154,7 @@
 
         <!-- Dernières absences -->
         <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-semibold text-gray-800 mb-4">⚠️ Dernières absences</h3>
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Dernières absences</h3>
             <div class="space-y-3">
                 @forelse($dernieresAbsences as $absence)
                     <div class="flex items-center p-3 bg-red-50 rounded-lg">
@@ -178,7 +178,7 @@
                         <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <p>Aucune absence récente 🎉</p>
+                        <p>Aucune absence récente </p>
                     </div>
                 @endforelse
             </div>
@@ -194,7 +194,7 @@
 
     <!-- Taux de présence en cercle -->
     <div class="bg-white rounded-xl shadow-md p-6">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">🎯 Taux de présence global</h3>
+        <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Taux de présence global</h3>
         <div class="flex justify-center">
             <div class="relative w-48 h-48">
                 <canvas id="attendanceChart" width="192" height="192"></canvas>

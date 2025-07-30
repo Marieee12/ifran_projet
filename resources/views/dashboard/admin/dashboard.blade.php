@@ -91,14 +91,6 @@
                             <p class="text-sm text-gray-600">Créer et gérer les comptes</p>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
-                        <button class="p-2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="p-2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
                 </div>
                 <div class="flex space-x-4">
                     <a href="{{ route('dashboard.utilisateur.create') }}" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 px-4 py-2 rounded-lg text-center transition-colors">
@@ -121,14 +113,6 @@
                             <h3 class="text-lg font-semibold text-gray-900">Configuration Académique</h3>
                             <p class="text-sm text-gray-600">Classes, filières et matières</p>
                         </div>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button class="p-2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="p-2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-trash"></i>
-                        </button>
                     </div>
                 </div>
                 <div class="flex space-x-4">

@@ -57,7 +57,7 @@
         <!-- Scripts -->
     </head>
     <body class="font-sans antialiased bg-gray-100">
-        <div class="flex h-screen">
+        <div class="flex">
             <!-- Sidebar Navigation -->
             @include('layouts.navigation')
 
