@@ -1,26 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Header -->
-<header class="bg-white shadow-sm border-b">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 flex items-center">
-                    <i class="fas fa-user-plus mr-3 text-indigo-600"></i>Créer un Utilisateur
-                </h1>
-                <p class="text-gray-600 mt-2">Ajoutez un nouvel utilisateur au système IFRAN TRACK</p>
+<div class="min-h-screen bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-user-plus mr-3 text-indigo-600"></i>Créer un Utilisateur
+                    </h1>
+                    <p class="text-gray-600 mt-2">Ajoutez un nouvel utilisateur au système IFRAN TRACK</p>
+                </div>
+                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                    <i class="fas fa-arrow-left mr-2"></i> Retour au Dashboard
+                </a>
             </div>
-            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
-                <i class="fas fa-arrow-left mr-2"></i> Retour au Dashboard
-            </a>
         </div>
-    </div>
-</header>
+    </header>
 
-<!-- Main Content -->
-<div class="bg-gray-100">
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-white rounded-lg shadow-sm p-8">
             <!-- Messages de notification -->
             @if (session('success'))

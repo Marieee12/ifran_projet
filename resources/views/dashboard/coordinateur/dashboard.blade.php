@@ -66,13 +66,13 @@
 
         <!-- Actions rapides -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-            <a href="{{ route('coordinateur.absences') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
+            <a href="{{ route('coordinateur.absences.dashboard') }}" class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group">
                 <div class="flex flex-col items-center text-center">
                     <div class="bg-red-100 p-4 rounded-full mb-4 group-hover:bg-red-200 transition-colors duration-200">
                         <i class="fas fa-user-clock text-2xl text-red-600"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Gestion des Absences</h3>
-                    <p class="text-sm text-gray-600">Gérer et suivre les absences des étudiants</p>
+                    <p class="text-sm text-gray-600">Suivre et gérer les absences des étudiants</p>
                 </div>
             </a>
 

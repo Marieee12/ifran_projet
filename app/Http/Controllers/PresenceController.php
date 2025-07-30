@@ -194,18 +194,21 @@ class PresenceController extends Controller
         }
 
         $validated = $request->validate([
-            'motif' => 'required|string|max:500',
-            'justification' => 'required|string|max:1000'
+            'raison_justification' => 'required|string|max:1000'
         ]);
 
+        // Trouver le coordinateur associé à l'utilisateur connecté
+        $coordinateur = $user->coordinateur;
+        if (!$coordinateur) {
+            abort(403, 'Utilisateur coordinateur non trouvé');
+        }
+
         JustificationAbsence::create([
-            'id_etudiant' => $presence->id_etudiant,
-            'id_seance_cours' => $presence->id_seance_cours,
-            'motif' => $validated['motif'],
-            'justification' => $validated['justification'],
+            'id_presence' => $presence->id,
+            'raison_justification' => $validated['raison_justification'],
             'date_justification' => now(),
-            'justifie_par_id_utilisateur' => $user->id,
-            'status' => 'Approuvé'
+            'justifiee_par_id_coordinateur' => $coordinateur->id,
+            'statut' => 'validee'
         ]);
 
         return redirect()->back()->with('success', 'Absence justifiée avec succès');

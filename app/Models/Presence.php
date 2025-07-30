@@ -52,7 +52,6 @@ class Presence extends Model
 
     public function justificationAbsence()
     {
-        return $this->hasOne(JustificationAbsence::class)->where('id_etudiant', $this->id_etudiant)
-                    ->where('id_seance_cours', $this->id_seance_cours);
+        return $this->hasOne(JustificationAbsence::class, 'id_presence');
     }
 }

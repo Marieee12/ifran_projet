@@ -16,9 +16,11 @@ class Cours extends Model
         'id_classe',
         'id_matiere',
         'id_enseignant',
+        'id_coordinateur',
         'date_seance',
         'heure_debut',
         'heure_fin',
+        'type_cours',
         'salle',
         'description'
     ];
@@ -39,6 +41,11 @@ class Cours extends Model
     }
 
     public function presences()
+    {
+        return $this->hasMany(Presence::class, 'id_seance_cours');
+    }
+
+    public function absences()
     {
         return $this->hasMany(Absence::class, 'cours_id');
     }

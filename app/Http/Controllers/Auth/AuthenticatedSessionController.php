@@ -31,17 +31,17 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         switch ($user->role_id) {
             case 1: // Admin
-                return redirect()->route('admin.dashboard');
+                return redirect('/admin/dashboard');
             case 2: // Coordinateur
-                return redirect()->route('coordinateur.index');
+                return redirect('/coordinateur/dashboard');
             case 3: // Enseignant
-                return redirect()->route('enseignant.dashboard');
+                return redirect('/enseignants/dashboard');
             case 4: // Étudiant
-                return redirect()->route('etudiant.dashboard');
+                return redirect('/etudiant/dashboard');
             case 5: // Parent
-                return redirect()->route('parent.dashboard');
+                return redirect('/parent/dashboard');
             default:
-                return redirect()->route('welcome')->with('error', 'Rôle non reconnu');
+                return redirect('/')->with('error', 'Rôle non reconnu');
         }
     }
 

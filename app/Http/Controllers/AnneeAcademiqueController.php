@@ -89,9 +89,19 @@ class AnneeAcademiqueController extends Controller
         }
 
         // Vérifier s'il y a des données liées avant de supprimer
-        if ($anneeAcademique->cours()->exists()) {
+        if ($anneeAcademique->classes()->exists()) {
+            // Vérifier s'il y a des cours dans les classes de cette année académique
+            $hasCoursInClasses = $anneeAcademique->classes()
+                ->whereHas('seancesCours')
+                ->exists();
+
+            if ($hasCoursInClasses) {
+                return redirect()->route('annees_academiques.index')
+                    ->with('error', 'Impossible de supprimer cette année académique car elle contient des classes avec des cours !');
+            }
+
             return redirect()->route('annees_academiques.index')
-                ->with('error', 'Impossible de supprimer cette année académique car elle contient des cours !');
+                ->with('error', 'Impossible de supprimer cette année académique car elle contient des classes !');
         }
 
         $anneeAcademique->delete();

@@ -101,7 +101,6 @@ class UserSeeder extends Seeder
             Enseignant::create([
                 'id_utilisateur' => $enseignant_user->id,
                 'specialite' => $data['specialite'],
-                'date_embauche' => now()->subYears(rand(1, 5)),
             ]);
 
             echo "   Email: {$data['email']}\n";

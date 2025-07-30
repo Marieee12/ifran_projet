@@ -11,7 +11,7 @@ class JustificationAbsence extends Model
 
     protected $table = 'justifications_absences';
     protected $primaryKey = 'id';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'id_presence',
@@ -19,6 +19,7 @@ class JustificationAbsence extends Model
         'raison_justification',
         'document_justificatif_url',
         'justifiee_par_id_coordinateur',
+        'statut',
     ];
 
     protected $casts = [
@@ -33,5 +34,20 @@ class JustificationAbsence extends Model
     public function justifieeParCoordinateur()
     {
         return $this->belongsTo(Coordinateur::class, 'justifiee_par_id_coordinateur');
+    }
+
+    /**
+     * Relation pour accéder à l'étudiant via la présence
+     */
+    public function etudiant()
+    {
+        return $this->hasOneThrough(
+            Etudiant::class,
+            Presence::class,
+            'id', // Clé primaire de Presence
+            'id', // Clé primaire d'Etudiant
+            'id_presence', // Clé étrangère de JustificationAbsence
+            'id_etudiant' // Clé étrangère de Presence
+        );
     }
 }

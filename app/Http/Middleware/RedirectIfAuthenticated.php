@@ -22,18 +22,21 @@ class RedirectIfAuthenticated
             if (Auth::guard($guard)->check()) {
                 $user = Auth::guard($guard)->user();
 
-                // Redirection basée sur le rôle
-                if ($user->coordinateur) {
-                    return redirect('/coordinateur/dashboard');
-                } elseif ($user->enseignant) {
-                    return redirect('/enseignants/dashboard');
-                } elseif ($user->etudiant) {
-                    return redirect('/etudiant/dashboard');
-                } elseif ($user->parent) {
-                    return redirect('/parent/dashboard');
+                // Redirection basée sur le role_id
+                switch ($user->role_id) {
+                    case 1: // Administrateur
+                        return redirect('/admin/dashboard');
+                    case 2: // Coordinateur
+                        return redirect('/coordinateur/dashboard');
+                    case 3: // Enseignant
+                        return redirect('/enseignants/dashboard');
+                    case 4: // Étudiant
+                        return redirect('/etudiant/dashboard');
+                    case 5: // Parent
+                        return redirect('/parent/dashboard');
+                    default:
+                        return redirect('/dashboard');
                 }
-
-                return redirect('/dashboard');
             }
         }
 

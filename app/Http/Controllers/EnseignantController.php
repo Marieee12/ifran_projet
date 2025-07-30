@@ -47,7 +47,7 @@ class EnseignantController extends Controller
 
             Log::info('Dashboard enseignant chargé avec succès pour l\'utilisateur ID: ' . $user->id);
 
-            return view('dashboard.enseignants.dashboard', compact('totalCours', 'coursAVenir'));
+            return view('dashboard.enseignant.dashboard', compact('totalCours', 'coursAVenir'));
         } catch (\Exception $e) {
             Log::error('Erreur lors du chargement du dashboard enseignant: ' . $e->getMessage());
             return redirect()->route('welcome')->with('error', 'Une erreur est survenue');
@@ -65,7 +65,7 @@ class EnseignantController extends Controller
                 ->orderBy('date_seance', 'desc')
                 ->paginate(10);
 
-            return view('dashboard.enseignants.cours', compact('cours'));
+            return view('dashboard.enseignant.cours', compact('cours'));
         } catch (\Exception $e) {
             Log::error('Erreur lors du chargement des cours: ' . $e->getMessage());
             return back()->with('error', 'Une erreur est survenue');
@@ -83,9 +83,45 @@ class EnseignantController extends Controller
                 ->with(['classe', 'matiere'])
                 ->get();
 
-            return view('dashboard.enseignants.presences', compact('seances'));
+            return view('dashboard.enseignant.presences', compact('seances'));
         } catch (\Exception $e) {
             Log::error('Erreur lors du chargement des présences: ' . $e->getMessage());
+            return back()->with('error', 'Une erreur est survenue');
+        }
+    }
+
+    public function emploiTemps()
+    {
+        try {
+            $user = Auth::user();
+            $enseignant = $user->enseignant;
+
+            // Récupérer l'année académique actuelle
+            $anneeActuelle = AnneeAcademique::where('est_actuelle', true)->first();
+
+            // Récupérer tous les cours de l'enseignant pour l'année en cours
+            $seances = SeanceCours::where('id_enseignant', $enseignant->id)
+                ->join('classes', 'seances_cours.id_classe', '=', 'classes.id')
+                ->where('classes.id_annee_academique', $anneeActuelle->id)
+                ->with(['classe', 'matiere'])
+                ->whereDate('date_seance', '>=', now()->toDateString())
+                ->orderBy('date_seance', 'asc')
+                ->orderBy('heure_debut', 'asc')
+                ->get();
+
+            // Organiser les séances par jour de la semaine
+            $planning = [];
+            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+            foreach ($seances as $seance) {
+                $dayOfWeek = \Carbon\Carbon::parse($seance->date_seance)->locale('fr')->dayName;
+                $dayOfWeekFr = $jours[\Carbon\Carbon::parse($seance->date_seance)->dayOfWeek - 1];
+                $planning[$dayOfWeekFr][] = $seance;
+            }
+
+            return view('dashboard.enseignant.emploi_temps', compact('planning', 'seances'));
+        } catch (\Exception $e) {
+            Log::error('Erreur lors du chargement de l emploi du temps: ' . $e->getMessage());
             return back()->with('error', 'Une erreur est survenue');
         }
     }

@@ -57,20 +57,33 @@
                         <i class="fas fa-home mr-3"></i>
                         <span>Tableau de bord</span>
                     </a>
-                    <a href="{{ route('coordinateur.absences') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <i class="fas fa-user-clock mr-3"></i>
-                        <span>Absences</span>
+                    <a href="{{ route('coordinateur.cours.index') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-book mr-3"></i>
+                        <span>Gestion des cours</span>
                     </a>
-                    <a href="{{ route('coordinateur.emploi_temps') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <a href="{{ route('coordinateur.emploi_temps.agenda') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
                         <i class="fas fa-calendar-alt mr-3"></i>
                         <span>Emploi du temps</span>
+                    </a>
+
+                    <!-- Section Absences -->
+                    <div class="mb-2 mt-4">
+                        <p class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Gestion des Absences</p>
+                    </div>
+                    <a href="{{ route('coordinateur.absences.dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        <span>Tableau de bord absences</span>
+                    </a>
+                    <a href="{{ route('coordinateur.absences.statistiques') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-chart-bar mr-3"></i>
+                        <span>Statistiques d'absences</span>
                     </a>
                     <a href="{{ route('coordinateur.justifications') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
                         <i class="fas fa-file-alt mr-3"></i>
                         <span>Justifications</span>
                     </a>
                     <a href="{{ route('coordinateur.creer_cours') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
-                        <i class="fas fa-book-open mr-3"></i>
+                        <i class="fas fa-plus mr-3"></i>
                         <span>Créer un cours</span>
                     </a>
                 </div>
@@ -81,6 +94,10 @@
                     <a href="{{ route('enseignant.dashboard') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
                         <i class="fas fa-home mr-3"></i>
                         <span>Tableau de bord</span>
+                    </a>
+                    <a href="{{ route('enseignant.emploi_temps') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-calendar-alt mr-3"></i>
+                        <span>Mon Emploi du Temps</span>
                     </a>
                     <a href="{{ route('enseignant.cours') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
                         <i class="fas fa-book mr-3"></i>

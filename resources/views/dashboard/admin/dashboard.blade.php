@@ -1,14 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex-1 overflow-y-auto bg-gray-100">
-    <header class="bg-white shadow-sm">
-        <div class="px-6 py-4">
-            <h1 class="text-2xl font-bold text-gray-800">Tableau de Bord Administrateur</h1>
-        </div>
-    </header>
+<!-- Header -->
+<header class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <h1 class="text-3xl font-bold text-gray-900">Tableau de Bord Administrateur</h1>
+    </div>
+</header>
 
-    <div class="px-6 py-8">
+<!-- Main Content -->
+<div class="bg-gray-100">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <!-- Vue d'Ensemble Rapide -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-lg shadow-sm p-6">
@@ -106,6 +108,6 @@
                 </div>
             </a>
         </div>
-    </div>
+    </main>
 </div>
 @endsection

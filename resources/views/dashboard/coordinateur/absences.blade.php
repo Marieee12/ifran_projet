@@ -9,9 +9,17 @@
                 <h1 class="text-2xl font-bold text-gray-800">Gestion des Absences</h1>
                 <p class="text-gray-600 mt-1">Suivi et gestion des absences des étudiants</p>
             </div>
-            <a href="{{ route('coordinateur.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
-                <i class="fas fa-arrow-left mr-2"></i>Retour au Dashboard
-            </a>
+            <div class="flex space-x-3">
+                <a href="{{ route('coordinateur.absences.statistiques') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-chart-bar mr-2"></i>Statistiques
+                </a>
+                <a href="{{ route('coordinateur.cours.index') }}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                    <i class="fas fa-plus mr-2"></i>Marquer présences
+                </a>
+                <a href="{{ route('coordinateur.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Retour au Dashboard
+                </a>
+            </div>
         </div>
     </header>
 

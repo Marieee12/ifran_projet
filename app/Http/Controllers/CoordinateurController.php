@@ -85,7 +85,7 @@ class CoordinateurController extends Controller
         $justificationsTotal = JustificationAbsence::count();
 
         // Liste paginée des justifications
-        $justifications = JustificationAbsence::with(['etudiant.user', 'absence.cours.matiere', 'absence.cours.classe'])
+        $justifications = JustificationAbsence::with(['etudiant.user', 'presence.seanceCours.matiere', 'presence.seanceCours.classe'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -234,10 +234,16 @@ class CoordinateurController extends Controller
             'heure_debut' => 'required',
             'heure_fin' => 'required|after:heure_debut',
             'salle' => 'nullable|string|max:100',
+            'type_cours' => 'nullable|in:Presentiel,E-learning,Workshop',
             'description' => 'nullable|string|max:500'
         ]);
 
-        Cours::create($request->all());
+        // Préparer les données avec des valeurs par défaut
+        $data = $request->all();
+        $data['type_cours'] = $request->input('type_cours', 'Presentiel'); // Valeur par défaut
+        $data['id_coordinateur'] = Auth::user()->coordinateur->id ?? null; // ID du coordinateur connecté
+
+        Cours::create($data);
 
         return redirect()->route('coordinateur.cours.index')
             ->with('success', 'Cours créé avec succès !');
@@ -282,5 +288,71 @@ class CoordinateurController extends Controller
 
         return redirect()->route('coordinateur.cours.index')
             ->with('success', 'Cours supprimé avec succès !');
+    }
+
+    // ===== MÉTHODES AVANCÉES POUR LES ABSENCES =====
+
+    public function voirPresences(Cours $cours)
+    {
+        $etudiants = $cours->classe->etudiants()->with('user')->get();
+        $presences = Absence::where('cours_id', $cours->id)
+            ->get()
+            ->keyBy('etudiant_id');
+
+        return view('dashboard.coordinateur.absences.presences', compact('cours', 'etudiants', 'presences'));
+    }
+
+    public function exportAbsences(Request $request)
+    {
+        $request->validate([
+            'date_debut' => 'required|date',
+            'date_fin' => 'required|date|after_or_equal:date_debut',
+            'classe_id' => 'nullable|exists:classes,id',
+            'format' => 'required|in:csv,excel'
+        ]);
+
+        // TODO: Implémentation de l'export
+        return back()->with('info', 'Fonctionnalité d\'export en développement.');
+    }
+
+    public function statistiquesAbsences(Request $request)
+    {
+        $classeId = $request->get('classe_id');
+        $dateDebut = $request->get('date_debut', now()->startOfMonth());
+        $dateFin = $request->get('date_fin', now()->endOfMonth());
+
+        $query = Absence::with(['etudiant.user', 'cours.classe', 'cours.matiere'])
+            ->where('present', false)
+            ->whereBetween('date_absence', [$dateDebut, $dateFin]);
+
+        if ($classeId) {
+            $query->whereHas('cours', function($q) use ($classeId) {
+                $q->where('id_classe', $classeId);
+            });
+        }
+
+        $absences = $query->get();
+        $classes = Classe::all();
+
+        // Statistiques
+        $stats = [
+            'total_absences' => $absences->count(),
+            'absences_justifiees' => $absences->where('justifie', true)->count(),
+            'absences_non_justifiees' => $absences->where('justifie', false)->count(),
+            'etudiants_absents' => $absences->pluck('etudiant_id')->unique()->count(),
+            'absences_par_classe' => $absences->groupBy('cours.classe.nom_classe_complet')->map->count(),
+            'absences_par_matiere' => $absences->groupBy('cours.matiere.nom_matiere')->map->count(),
+            'absences_par_jour' => $absences->groupBy(function($absence) {
+                return $absence->date_absence->format('Y-m-d');
+            })->map->count()
+        ];
+
+        return view('dashboard.coordinateur.absences.statistiques', compact(
+            'stats',
+            'classes',
+            'classeId',
+            'dateDebut',
+            'dateFin'
+        ));
     }
 }

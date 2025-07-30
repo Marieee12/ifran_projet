@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Etudiant;
+use App\Models\Enseignant;
+use App\Models\Coordinateur;
+use App\Models\ParentModel;
+use App\Models\Classe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -34,6 +39,55 @@ class DashboardUserController extends Controller
             'role_id' => $request->role_id,
             'est_actif' => true
         ]);
+
+        // Créer automatiquement le profil selon le rôle
+        $role = Role::find($request->role_id);
+        if ($role) {
+            switch ($role->nom_role) {
+                case 'Étudiant':
+                    // Récupérer la première classe disponible ou créer une classe par défaut
+                    $premiereClasse = Classe::first();
+                    if (!$premiereClasse) {
+                        // Si aucune classe n'existe, en créer une par défaut
+                        $premiereClasse = Classe::create([
+                            'nom_classe_complet' => 'Classe par défaut',
+                            'filiere_id' => 1, // Supposons qu'il existe une filière avec ID 1
+                            'niveau_etude_id' => 1, // Supposons qu'il existe un niveau avec ID 1
+                            'annee_academique_id' => 1 // Supposons qu'il existe une année académique avec ID 1
+                        ]);
+                    }
+
+                    Etudiant::create([
+                        'user_id' => $user->id,
+                        'classe_id' => $premiereClasse->id,
+                        'date_naissance' => '2000-01-01', // Date par défaut
+                        'adresse' => 'Adresse à compléter',
+                        'telephone' => '0000000000' // Téléphone par défaut
+                    ]);
+                    break;
+
+                case 'Enseignant':
+                    \App\Models\Enseignant::create([
+                        'id_utilisateur' => $user->id,
+                        'specialite' => 'À définir'
+                    ]);
+                    break;
+
+                case 'Coordinateur Pédagogique':
+                    \App\Models\Coordinateur::create([
+                        'id_utilisateur' => $user->id,
+                        'fonction' => 'Coordinateur Pédagogique'
+                    ]);
+                    break;
+
+                case 'Parent':
+                    \App\Models\ParentModel::create([
+                        'id_utilisateur' => $user->id,
+                        'telephone' => '0000000000'
+                    ]);
+                    break;
+            }
+        }
 
         event(new \Illuminate\Auth\Events\Registered($user));
 

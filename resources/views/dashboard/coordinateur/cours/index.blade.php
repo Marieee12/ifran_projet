@@ -178,8 +178,15 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex space-x-2">
+                                            <a href="{{ route('coordinateur.absences.marquer', $coursItem) }}"
+                                               class="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-2 py-1 rounded"
+                                               title="Marquer les présences">
+                                                <i class="fas fa-users"></i>
+                                            </a>
+
                                             <a href="{{ route('coordinateur.cours.edit', $coursItem) }}"
-                                               class="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded">
+                                               class="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-2 py-1 rounded"
+                                               title="Modifier">
                                                 <i class="fas fa-edit"></i>
                                             </a>
 
@@ -190,7 +197,8 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                        class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-2 py-1 rounded">
+                                                        class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-2 py-1 rounded"
+                                                        title="Supprimer">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
