@@ -24,6 +24,10 @@
                             <i class="fas fa-users mr-3"></i>
                             <span>Tous les Utilisateurs</span>
                         </a>
+                        <a href="{{ route('parents.assign.form') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                            <i class="fas fa-users mr-3"></i>
+                            <span>Assignations</span>
+                        </a>
                         <a href="{{ route('dashboard.utilisateur.create') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg">
                             <i class="fas fa-user-plus mr-3"></i>
                             <span>Ajouter Utilisateur</span>

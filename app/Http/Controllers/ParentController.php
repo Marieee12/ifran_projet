@@ -306,4 +306,56 @@ class ParentController extends Controller
 
         return view('dashboard.parent.notifications', compact('notifications'));
     }
+
+    /**
+     * Affiche le formulaire d'assignation parent-étudiants (admin uniquement)
+     */
+    public function showAssignForm()
+    {
+        $parents = ParentModel::with('user')->get();
+        $etudiants = Etudiant::all();
+        return view('dashboard.parents.assign', compact('parents', 'etudiants'));
+    }
+
+    /**
+     * Traite l'assignation parent-étudiants (admin uniquement)
+     */
+    public function assign(Request $request)
+    {
+        $request->validate([
+            'parent_id' => 'required|exists:parents,id',
+            'etudiant_ids' => 'required|array',
+            'etudiant_ids.*' => 'exists:etudiants,id',
+        ]);
+        $parent = ParentModel::findOrFail($request->parent_id);
+        $parent->etudiants()->sync($request->etudiant_ids);
+        return redirect()->back()->with('success', 'Assignation réalisée avec succès !');
+    }
+
+    /**
+     * Associer un parent à plusieurs étudiants
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            // ... autres validations ...
+            'etudiant_ids' => 'required|array',
+            'etudiant_ids.*' => 'exists:etudiants,id',
+        ]);
+
+        $parent = ParentModel::create($request->except('etudiant_ids'));
+        $parent->etudiants()->attach($request->etudiant_ids);
+
+        return redirect()->route('parents.index')->with('success', 'Parent associé aux étudiants avec succès !');
+    }
+
+    /**
+     * Désassigne un étudiant d'un parent (admin uniquement)
+     */
+    public function unassignEtudiant(Request $request, $parent_id, $etudiant_id)
+    {
+        $parent = ParentModel::findOrFail($parent_id);
+        $parent->etudiants()->detach($etudiant_id);
+        return redirect()->back()->with('success', 'Étudiant désassigné du parent avec succès !');
+    }
 }

@@ -64,65 +64,6 @@ Route::get('/test-dashboard-direct', function () {
     $totalAbsences = \App\Models\Absence::where('id_etudiant', $etudiant->id)->count();
     $totalPresences = \App\Models\Presence::where('id_etudiant', $etudiant->id)->count();
 
-    return '
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Dashboard Étudiant - ' . $user->prenom . ' ' . $user->nom . '</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
-            .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
-            .header { background: #e74c3c; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-            .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px; }
-            .stat-card { background: #3498db; color: white; padding: 20px; border-radius: 8px; text-align: center; }
-            .nav { margin-bottom: 20px; }
-            .nav a { background: #2ecc71; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>🎓 Dashboard Étudiant</h1>
-                <h2>Bienvenue, ' . $user->prenom . ' ' . $user->nom . '</h2>
-                <p>Email: ' . $user->email . ' | Matricule: ' . $etudiant->numero_etudiant . '</p>
-            </div>
-
-            <div class="nav">
-                <a href="/test-login">🏠 Accueil</a>
-                <a href="/etudiant/absences">📋 Mes Absences</a>
-                <a href="/etudiant/emploi-temps">📅 Emploi du Temps</a>
-                <a href="/logout">🚪 Déconnexion</a>
-            </div>
-
-            <div class="stats">
-                <div class="stat-card">
-                    <h3>📚 Total Séances</h3>
-                    <h2>' . $totalSeances . '</h2>
-                </div>
-                <div class="stat-card">
-                    <h3>❌ Mes Absences</h3>
-                    <h2>' . $totalAbsences . '</h2>
-                </div>
-                <div class="stat-card">
-                    <h3>✅ Mes Présences</h3>
-                    <h2>' . $totalPresences . '</h2>
-                </div>
-                <div class="stat-card">
-                    <h3>📊 Taux Présence</h3>
-                    <h2>' . ($totalSeances > 0 ? round(($totalPresences / $totalSeances) * 100, 1) : 0) . '%</h2>
-                </div>
-            </div>
-
-            <div style="background: #ecf0f1; padding: 20px; border-radius: 8px;">
-                <h3>🔧 Informations de Debug</h3>
-                <p><strong>User ID:</strong> ' . $user->id . '</p>
-                <p><strong>Étudiant ID:</strong> ' . $etudiant->id . '</p>
-                <p><strong>Role ID:</strong> ' . $user->role_id . '</p>
-                <p><strong>Classe:</strong> ' . ($etudiant->classe ? $etudiant->classe->nom : 'Non assignée') . '</p>
-            </div>
-        </div>
-    </body>
-    </html>';
 });
 
 // Route de diagnostic pour comprendre les problèmes d'authentification
@@ -304,6 +245,11 @@ Route::middleware(['auth', 'role:administrateur'])->group(function () {
     Route::get('/admin/parents/{parent}/enfants', [AdminController::class, 'parentEnfants'])->name('admin.parent.enfants');
     Route::post('/admin/parents/{parent}/associate-enfant', [AdminController::class, 'associateEnfant'])->name('admin.parent.associate');
     Route::delete('/admin/parents/{parent}/enfants/{etudiant}', [AdminController::class, 'removeEnfant'])->name('admin.parent.remove-enfant');
+    Route::delete('/admin/parents/{parent}/unassign-etudiant/{etudiant}', [App\Http\Controllers\ParentController::class, 'unassignEtudiant'])->name('parents.unassign.etudiant');
+
+    // Formulaire d'assignation parent-étudiants
+    Route::get('/admin/parents/assign', [App\Http\Controllers\ParentController::class, 'showAssignForm'])->name('parents.assign.form');
+    Route::post('/admin/parents/assign', [App\Http\Controllers\ParentController::class, 'assign'])->name('parents.assign');
 
     // Autres routes admin existantes
     Route::get('/utilisateur/create', [App\Http\Controllers\DashboardUserController::class, 'create'])->name('dashboard.utilisateur.create');

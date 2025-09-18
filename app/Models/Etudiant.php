@@ -31,6 +31,11 @@ class Etudiant extends Model
         return $this->belongsTo(Classe::class);
     }
 
+    public function parents()
+    {
+        return $this->belongsToMany(ParentModel::class, 'parents_etudiants', 'id_etudiant', 'id_parent');
+    }
+
     protected $casts = [
         'date_naissance' => 'date',
     ];
