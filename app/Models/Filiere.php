@@ -23,4 +23,10 @@ class Filiere extends Model
     {
         return $this->hasMany(Classe::class, 'id_filiere');
     }
+
+    // Une filière appartient à un niveau d'étude
+    public function niveauEtude()
+    {
+        return $this->belongsTo(NiveauEtude::class, 'niveau_etude_id');
+    }
 }

@@ -13,12 +13,12 @@ class AdminSeeder extends Seeder
     {
         // Création de l'administrateur
         User::create([
-            'role_id' => Role::where('nom_role', 'admin')->first()->id,
+            'role_id' => Role::where('nom_role', 'Administrateur')->first()->id,
             'nom_utilisateur' => 'admin',
             'prenom' => 'Admin',
             'nom' => 'System',
-            'email' => 'admin@ifran.com',
-            'password' => Hash::make('admin123'),
+            'email' => 'admin@ifran.ma',
+            'password' => Hash::make('password'),
             'est_actif' => true,
             'date_creation' => now(),
             'derniere_connexion' => null

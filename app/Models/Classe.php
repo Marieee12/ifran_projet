@@ -34,7 +34,7 @@ class Classe extends Model
 
     public function etudiants()
     {
-        return $this->hasMany(Etudiant::class, 'id_classe');
+        return $this->hasMany(Etudiant::class, 'classe_id');
     }
 
     public function seancesCours()

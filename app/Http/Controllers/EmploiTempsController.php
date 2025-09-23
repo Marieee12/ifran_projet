@@ -214,9 +214,9 @@ class EmploiTempsController extends Controller
         } else {
             // Reporter le cours (créer une nouvelle séance)
             $nouvelleSeance = $seance->replicate();
-            $nouvelleSeance->date_seance = $validated['nouvelle_date'];
-            $nouvelleSeance->heure_debut = $validated['nouvelle_heure_debut'];
-            $nouvelleSeance->heure_fin = $validated['nouvelle_heure_fin'];
+            $nouvelleSeance->date_seance = Carbon::parse($validated['nouvelle_date'])->format('Y-m-d');
+            $nouvelleSeance->heure_debut = Carbon::parse($validated['nouvelle_heure_debut'])->format('H:i:s');
+            $nouvelleSeance->heure_fin = Carbon::parse($validated['nouvelle_heure_fin'])->format('H:i:s');
             $nouvelleSeance->id_seance_precedente = $seance->id;
             $nouvelleSeance->save();
 

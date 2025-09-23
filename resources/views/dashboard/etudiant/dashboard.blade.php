@@ -5,17 +5,22 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header avec informations utilisateur -->
-    <div class="bg-gradient-to-r from-blue-600 to-red-600 rounded-xl shadow-lg p-6 text-white">
-        <div class="flex items-center justify-between">
+    <style>
+        .gradient-header {
+            background: linear-gradient(135deg, #161853 0%, #032f76 50%, #dc2626 100%);
+        }
+    </style>
+    <div class="relative overflow-hidden rounded-xl shadow-lg p-6 gradient-header">
+        <div class="relative z-10 flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold">Bonjour, {{ $etudiant->prenom }} ! 👋</h1>
-                <p class="text-blue-100 mt-2">Bienvenue sur votre dashboard étudiant</p>
-                <p class="text-sm text-blue-200">{{ now()->format('l j F Y') }}</p>
+                <h1 class="text-3xl font-bold text-white">Bonjour, {{ $etudiant->prenom }} ! 👋</h1>
+                <p class="text-white mt-2">Bienvenue sur votre dashboard étudiant</p>
+                <p class="text-sm text-white">{{ now()->format('l j F Y') }}</p>
             </div>
             <div class="text-right">
-                <div class="bg-white/20 rounded-lg p-4">
-                    <div class="text-2xl font-bold">{{ $stats['taux_presence'] }}%</div>
-                    <div class="text-sm">Taux de présence</div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                    <div class="text-2xl font-bold text-white">{{ $stats['taux_presence'] }}%</div>
+                    <div class="text-sm text-white">Taux de présence</div>
                 </div>
             </div>
         </div>

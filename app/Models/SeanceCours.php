@@ -33,6 +33,25 @@ class SeanceCours extends Model
         'est_annulee' => 'boolean',
     ];
 
+    public function getHeureDebutAttribute($value)
+    {
+        if (!$value) return null;
+        $time = explode(' ', $value);
+        return end($time);
+    }
+
+    public function getHeureFinAttribute($value)
+    {
+        if (!$value) return null;
+        $time = explode(' ', $value);
+        return end($time);
+    }
+
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d');
+    }
+
 
     public function matiere()
     {

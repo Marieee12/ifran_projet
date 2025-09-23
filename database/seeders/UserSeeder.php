@@ -20,22 +20,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Créer l'administrateur en priorité
-        $admin = User::create([
-            'role_id' => 1, // Administrateur
-            'nom_utilisateur' => 'admin',
-            'prenom' => 'Marie',
-            'nom' => 'ADMIN',
-            'email' => 'admin@ifran.ma',
-            'password' => Hash::make('admin123'),
-            'telephone' => '0123456789',
-            'date_creation' => now(),
-            'est_actif' => true,
-        ]);
-
-        echo "👤 ADMINISTRATEUR créé:\n";
-        echo "   Email: admin@ifran.ma\n";
-        echo "   Mot de passe: admin123\n\n";
+        // L'administrateur est déjà créé par AdminSeeder
 
         // Créer un coordinateur pédagogique
         $coordinateur_user = User::create([
@@ -51,7 +36,7 @@ class UserSeeder extends Seeder
         ]);
 
         Coordinateur::create([
-            'id_utilisateur' => $coordinateur_user->id,
+            'user_id' => $coordinateur_user->id,
             'departement' => 'Informatique',
         ]);
 
@@ -99,7 +84,7 @@ class UserSeeder extends Seeder
             ]);
 
             Enseignant::create([
-                'id_utilisateur' => $enseignant_user->id,
+                'user_id' => $enseignant_user->id,
                 'specialite' => $data['specialite'],
             ]);
 
@@ -166,10 +151,13 @@ class UserSeeder extends Seeder
             $classeId = $classes->isNotEmpty() ? $classes->random()->id : null;
 
             Etudiant::create([
-                'id_utilisateur' => $etudiant_user->id,
+                'user_id' => $etudiant_user->id,
                 'numero_etudiant' => 'ETU' . str_pad($index + 1, 4, '0', STR_PAD_LEFT),
                 'date_inscription' => now()->subMonths(rand(1, 12)),
-                'id_classe' => $classeId,
+                'classe_id' => $classeId,
+                'date_naissance' => now()->subYears(rand(18, 25)),
+                'adresse' => 'Adresse fictive ' . ($index + 1),
+                'telephone' => '06' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT),
             ]);
 
             echo "   Email: {$data['email']}\n";
@@ -214,8 +202,8 @@ class UserSeeder extends Seeder
             ]);
 
             ParentModel::create([
-                'id_utilisateur' => $parent_user->id,
-                'profession' => ['Ingénieur', 'Médecin', 'Professeur', 'Commerçant'][rand(0, 3)],
+                'user_id' => $parent_user->id,
+                'telephone' => '06' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT),
             ]);
 
             echo "   Email: {$data['email']}\n";

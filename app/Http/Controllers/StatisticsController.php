@@ -50,9 +50,8 @@ class StatisticsController extends Controller
             })->count();
 
             if ($totalSeances > 0) {
-                // Compter les présences (statut_presence = 'Present')
+                // Compter toutes les présences
                 $presences = Presence::where('id_etudiant', $student->id)
-                    ->where('statut_presence', 'Present')
                     ->count();
 
                 // Calculer le taux de présence
@@ -96,10 +95,10 @@ class StatisticsController extends Controller
                 // Calculer le total de présences possibles
                 $totalPresencesPossibles = $totalSeances * $totalEtudiants;
 
-                // Compter les présences réelles (statut_presence = 'Present')
+                // Compter toutes les présences réelles
                 $presencesReelles = Presence::whereHas('etudiant', function($query) use ($classe) {
                     $query->where('id_classe', $classe->id);
-                })->where('statut_presence', 'Present')->count();
+                })->count();
 
                 $tauxPresence = ($presencesReelles / $totalPresencesPossibles) * 100;
 

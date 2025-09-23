@@ -75,9 +75,9 @@ class EnseignantSeeder extends Seeder
 
             // Créer l'enseignant
             Enseignant::firstOrCreate(
-                ['id_utilisateur' => $user->id],
+                ['user_id' => $user->id],
                 [
-                    'id_utilisateur' => $user->id,
+                    'user_id' => $user->id,
                     'specialite' => $enseignantData['specialite']
                 ]
             );

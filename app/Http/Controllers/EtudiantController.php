@@ -439,4 +439,47 @@ class EtudiantController extends Controller
         return redirect()->route('etudiants.index')
             ->with('success', 'Étudiant supprimé avec succès.');
     }
+
+    /**
+     * Affiche le formulaire d'assignation étudiant-classe-niveau
+     */
+    public function showAssignForm()
+    {
+        $etudiants = \App\Models\Etudiant::with(['user', 'classe.filiere', 'classe.niveauEtude'])->get();
+        $niveaux = \App\Models\NiveauEtude::with('classes.filiere')->get();
+        $classes = \App\Models\Classe::with(['filiere', 'niveauEtude'])->get()->groupBy('id_niveau_etude');
+
+        // Organiser les classes par niveau pour l'affichage
+        $classesParNiveau = [];
+        foreach ($niveaux as $niveau) {
+            $classesParNiveau[$niveau->id] = $classes->get($niveau->id, collect());
+        }
+
+        return view('dashboard.etudiants.assign', compact('etudiants', 'classesParNiveau', 'niveaux'));
+    }
+
+    /**
+     * Traite l'assignation d'un étudiant à une classe et un niveau
+     */
+    public function assign(Request $request)
+    {
+        $request->validate([
+            'etudiant_id' => 'required|exists:etudiants,id',
+            'classe_id' => 'required|exists:classes,id',
+            'niveau_id' => 'required|exists:niveaux_etude,id',
+        ]);
+
+        // Vérifier que la classe appartient bien au niveau sélectionné
+        $classe = \App\Models\Classe::findOrFail($request->classe_id);
+        if ($classe->niveau_etude_id != $request->niveau_id) {
+            return back()->withErrors(['classe_id' => 'La classe sélectionnée ne correspond pas au niveau d\'étude choisi.'])->withInput();
+        }
+
+        $etudiant = \App\Models\Etudiant::findOrFail($request->etudiant_id);
+        $etudiant->classe_id = $request->classe_id;
+        $etudiant->niveau_etude_id = $request->niveau_id;
+        $etudiant->save();
+
+        return redirect()->route('etudiants.assign.form')->with('success', 'Étudiant assigné avec succès à la classe et au niveau.');
+    }
 }

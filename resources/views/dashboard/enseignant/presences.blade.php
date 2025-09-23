@@ -22,6 +22,9 @@
                                 {{ \Carbon\Carbon::parse($seance->heure_debut)->format('H:i') }} -
                                 {{ \Carbon\Carbon::parse($seance->heure_fin)->format('H:i') }}
                             </p>
+                            <p class="text-sm text-green-700 mt-1">
+                                Étudiants attendus : <span class="font-bold">{{ $seance->classe->etudiants->count() ?? '?' }}</span>
+                            </p>
                         </div>
                         <div class="text-right">
                             <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
@@ -36,7 +39,11 @@
                             <i class="fas fa-clipboard-check mr-2"></i>
                             Marquer les présences
                         </a>
-
+                        <a href="{{ route('enseignant.seance.presences', ['id' => $seance->id, 'preset' => 'present']) }}"
+                           class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                            <i class="fas fa-check-double mr-2"></i>
+                            Tous présents
+                        </a>
                         <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg transition-colors duration-200 flex items-center">
                             <i class="fas fa-eye mr-2"></i>
                             Voir les détails

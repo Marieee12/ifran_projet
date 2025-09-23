@@ -16,7 +16,8 @@ class Presence extends Model
     protected $fillable = [
         'id_seance_cours',
         'id_etudiant',
-        'statut_presence',
+        'statut',
+        'commentaire',
         'date_saisie',
         'saisi_par_id_utilisateur',
         'saisie_dans_delai',

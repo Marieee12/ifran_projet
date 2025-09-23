@@ -67,17 +67,17 @@ class User extends Authenticatable
 
     public function enseignant()
     {
-        return $this->hasOne(Enseignant::class, 'id_utilisateur');
+        return $this->hasOne(Enseignant::class, 'user_id');
     }
 
     public function coordinateur()
     {
-        return $this->hasOne(Coordinateur::class, 'id_utilisateur');
+        return $this->hasOne(Coordinateur::class, 'user_id');
     }
 
     public function parent()
     {
-        return $this->hasOne(ParentModel::class, 'id_utilisateur');
+        return $this->hasOne(ParentModel::class, 'user_id');
     }
 
     public function presencesSaisies()

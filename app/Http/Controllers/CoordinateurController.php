@@ -52,12 +52,15 @@ class CoordinateurController extends Controller
             ->take(5)
             ->get();
 
+        $classes = Classe::with(['filiere', 'niveauEtude'])->get();
+
         return view('dashboard.coordinateur.dashboard', compact(
             'absencesCount',
             'justificationsCount',
             'coursCount',
             'etudiantsCount',
             'coursDuJour',
+            'classes',
             'notifications'
         ));
     }
@@ -95,16 +98,16 @@ class CoordinateurController extends Controller
         $today = Carbon::today();
         $startOfWeek = Carbon::now()->startOfWeek();
 
-        $absencesToday = Presence::where('statut_presence', 'Absent')
+        $absencesToday = Presence::where('statut', 'Absent')
             ->whereDate('date_saisie', $today)->count();
-        $absencesWeek = Presence::where('statut_presence', 'Absent')
+        $absencesWeek = Presence::where('statut', 'Absent')
             ->where('date_saisie', '>=', $startOfWeek)->count();
-        $absencesJustified = Presence::where('statut_presence', 'Absent')
+        $absencesJustified = Presence::where('statut', 'Absent')
             ->whereHas('justificationAbsence')->count();
-        $absencesNotJustified = Presence::where('statut_presence', 'Absent')
+        $absencesNotJustified = Presence::where('statut', 'Absent')
             ->whereDoesntHave('justificationAbsence')->count();
 
-        $absences = Presence::where('statut_presence', 'Absent')
+        $absences = Presence::where('statut', 'Absent')
             ->with(['etudiant.user', 'seanceCours.classe', 'seanceCours.matiere'])
             ->orderBy('date_saisie', 'desc')
             ->paginate(10);
@@ -139,7 +142,7 @@ class CoordinateurController extends Controller
     public function validerJustification(JustificationAbsence $justification)
     {
         $user = Auth::user();
-        $coordinateur = Coordinateur::where('id_utilisateur', $user->id)->first();
+        $coordinateur = Coordinateur::where('user_id', $user->id)->first();
 
         if (!$coordinateur) {
             return back()->with('error', 'Vous n\'avez pas les droits de coordinateur.');

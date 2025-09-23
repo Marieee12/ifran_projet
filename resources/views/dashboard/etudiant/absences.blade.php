@@ -213,8 +213,8 @@
 </div>
 
 <!-- Modal de justification -->
-<div id="justificationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+<div id="justificationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="p-5 border w-96 shadow-lg rounded-md bg-white">
         <div class="mt-3">
             <h3 class="text-lg font-medium text-gray-900 mb-4">Justifier l'absence</h3>
             <form id="justificationForm" method="POST" enctype="multipart/form-data">

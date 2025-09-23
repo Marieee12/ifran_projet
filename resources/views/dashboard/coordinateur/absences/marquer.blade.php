@@ -57,6 +57,10 @@
                                     class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition">
                                 <i class="fas fa-check-double mr-1"></i>Tous présents
                             </button>
+                            <button type="button" onclick="marquerTousRetards()"
+                                    class="bg-orange-500 text-white px-3 py-1 rounded text-sm hover:bg-orange-600 transition">
+                                <i class="fas fa-clock mr-1"></i>Tous en retard
+                            </button>
                             <button type="button" onclick="marquerTousAbsents()"
                                     class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition">
                                 <i class="fas fa-times-circle mr-1"></i>Tous absents
@@ -66,6 +70,12 @@
                 </div>
 
                 <div class="p-6">
+                    <div id="presence-counters" class="mb-4 text-sm text-gray-700 font-medium">
+                        <span id="counter-present" class="mr-4">Présents : 0</span>
+                        <span id="counter-retard" class="mr-4">Retards : 0</span>
+                        <span id="counter-absent">Absents : 0</span>
+                    </div>
+
                     @if($etudiants->count() > 0)
                         <div class="space-y-4">
                             @foreach($etudiants as $etudiant)
@@ -95,8 +105,8 @@
                                                    class="hidden presence-radio"
                                                    {{ (isset($presencesExistantes[$etudiant->id]) && $presencesExistantes[$etudiant->id] === 'Present') ? 'checked' : '' }}>
                                             <div class="presence-option present-option {{ (isset($presencesExistantes[$etudiant->id]) && $presencesExistantes[$etudiant->id] === 'Present') ? 'selected' : '' }}">
-                                                <i class="fas fa-check text-lg"></i>
-                                                <span class="ml-1 text-sm">Présent</span>
+                                                <i class="fas fa-check text-lg text-green-600"></i>
+                                                <span class="ml-1 text-sm text-green-600">Présent</span>
                                             </div>
                                         </label>
 
@@ -108,8 +118,8 @@
                                                    class="hidden presence-radio"
                                                    {{ (isset($presencesExistantes[$etudiant->id]) && $presencesExistantes[$etudiant->id] === 'Retard') ? 'checked' : '' }}>
                                             <div class="presence-option retard-option {{ (isset($presencesExistantes[$etudiant->id]) && $presencesExistantes[$etudiant->id] === 'Retard') ? 'selected' : '' }}">
-                                                <i class="fas fa-clock text-lg"></i>
-                                                <span class="ml-1 text-sm">Retard</span>
+                                                <i class="fas fa-clock text-lg text-orange-600"></i>
+                                                <span class="ml-1 text-sm text-orange-600">Retard</span>
                                             </div>
                                         </label>
 
@@ -121,8 +131,8 @@
                                                    class="hidden presence-radio"
                                                    {{ (isset($presencesExistantes[$etudiant->id]) && $presencesExistantes[$etudiant->id] === 'Absent') ? 'checked' : '' }}>
                                             <div class="presence-option absent-option {{ (isset($presencesExistantes[$etudiant->id]) && $presencesExistantes[$etudiant->id] === 'Absent') ? 'selected' : '' }}">
-                                                <i class="fas fa-times text-lg"></i>
-                                                <span class="ml-1 text-sm">Absent</span>
+                                                <i class="fas fa-times text-lg text-red-600"></i>
+                                                <span class="ml-1 text-sm text-red-600">Absent</span>
                                             </div>
                                         </label>
                                     </div>
@@ -159,27 +169,27 @@
 }
 
 .present-option {
-    @apply text-green-600 hover:border-green-400 hover:bg-green-50;
+    @apply text-green-700 border-green-400 bg-green-50 hover:border-green-500 hover:bg-green-100;
 }
 
 .present-option.selected {
-    @apply border-green-500 bg-green-100 text-green-700;
+    @apply border-green-600 bg-green-200 text-green-900;
 }
 
 .retard-option {
-    @apply text-orange-600 hover:border-orange-400 hover:bg-orange-50;
+    @apply text-orange-700 border-orange-400 bg-orange-50 hover:border-orange-500 hover:bg-orange-100;
 }
 
 .retard-option.selected {
-    @apply border-orange-500 bg-orange-100 text-orange-700;
+    @apply border-orange-600 bg-orange-200 text-orange-900;
 }
 
 .absent-option {
-    @apply text-red-600 hover:border-red-400 hover:bg-red-50;
+    @apply text-red-700 border-red-400 bg-red-50 hover:border-red-500 hover:bg-red-100;
 }
 
 .absent-option.selected {
-    @apply border-red-500 bg-red-100 text-red-700;
+    @apply border-red-600 bg-red-200 text-red-900;
 }
 </style>
 
@@ -187,6 +197,15 @@
 function marquerTousPresents() {
     const presentRadios = document.querySelectorAll('input[value="Present"]');
     presentRadios.forEach(radio => {
+        radio.checked = true;
+        updateOptionStyle(radio);
+    });
+    updateCounters();
+}
+
+function marquerTousRetards() {
+    const retardRadios = document.querySelectorAll('input[value="Retard"]');
+    retardRadios.forEach(radio => {
         radio.checked = true;
         updateOptionStyle(radio);
     });
@@ -229,12 +248,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateCounters() {
-    const totalEtudiants = document.querySelectorAll('input[name^="presences["]').length / 3; // 3 options par étudiant
     const presents = document.querySelectorAll('input[value="Present"]:checked').length;
     const retards = document.querySelectorAll('input[value="Retard"]:checked').length;
     const absents = document.querySelectorAll('input[value="Absent"]:checked').length;
-
-    console.log(`Total: ${totalEtudiants}, Présents: ${presents}, Retards: ${retards}, Absents: ${absents}`);
+    document.getElementById('counter-present').textContent = `Présents : ${presents}`;
+    document.getElementById('counter-retard').textContent = `Retards : ${retards}`;
+    document.getElementById('counter-absent').textContent = `Absents : ${absents}`;
 }
 </script>
 @endsection

@@ -98,7 +98,7 @@ class AbsenceController extends Controller
 
         // Récupérer les présences existantes pour cette séance
         $presencesExistantes = Presence::where('id_seance_cours', $seance->id)
-            ->pluck('statut_presence', 'id_etudiant')
+            ->pluck('statut', 'id_etudiant')
             ->toArray();
 
         return view('dashboard.coordinateur.absences.marquer', compact('seance', 'etudiants', 'presencesExistantes'));

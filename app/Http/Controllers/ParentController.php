@@ -35,7 +35,7 @@ class ParentController extends Controller
     {
         try {
             $user = Auth::user();
-            $parent = ParentModel::where('id_utilisateur', $user->id)->first();
+            $parent = ParentModel::where('user_id', $user->id)->first();
 
             if (!$parent) {
                 return redirect('/')->with('error', 'Profil parent non trouvé');
@@ -52,20 +52,20 @@ class ParentController extends Controller
             foreach ($enfants as $enfant) {
                 // Compter les absences de cet enfant (presences avec statut 'Absent')
                 $absencesEnfant = \App\Models\Presence::where('id_etudiant', $enfant->id)
-                    ->where('statut_presence', 'Absent')
+                    ->where('statut', 'Absent')
                     ->count();
                 $totalAbsences += $absencesEnfant;
 
                 // Compter les absences non justifiées
                 $absencesNonJustifieesEnfant = \App\Models\Presence::where('id_etudiant', $enfant->id)
-                    ->where('statut_presence', 'Absent')
+                    ->where('statut', 'Absent')
                     ->whereDoesntHave('justificationAbsence')
                     ->count();
                 $absencesNonJustifiees += $absencesNonJustifieesEnfant;
 
                 // Compter les justifications en attente
                 $justificationsEnAttenteEnfant = \App\Models\JustificationAbsence::whereHas('presence', function($query) use ($enfant) {
-                    $query->where('id_etudiant', $enfant->id)->where('statut_presence', 'Absent');
+                    $query->where('id_etudiant', $enfant->id)->where('statut', 'Absent');
                 })->where('statut', 'en_attente')->count();
                 $justificationsEnAttente += $justificationsEnAttenteEnfant;
             }
@@ -89,10 +89,11 @@ class ParentController extends Controller
             // Calculer les absences de ce mois pour tous les enfants
             if ($enfants->isNotEmpty()) {
                 $enfantIds = $enfants->pluck('id');
-                $statistiques['absences_ce_mois'] = Presence::whereIn('id_etudiant', $enfantIds)
-                    ->where('statut', 'absent')
-                    ->whereMonth('date_seance', Carbon::now()->month)
-                    ->whereYear('date_seance', Carbon::now()->year)
+                $statistiques['absences_ce_mois'] = Presence::join('seances_cours', 'presences.id_seance_cours', '=', 'seances_cours.id')
+                    ->whereIn('presences.id_etudiant', $enfantIds)
+                    ->where('presences.statut', 'Absent')
+                    ->whereMonth('seances_cours.date_seance', Carbon::now()->month)
+                    ->whereYear('seances_cours.date_seance', Carbon::now()->year)
                     ->count();
             }
 
@@ -141,7 +142,13 @@ class ParentController extends Controller
             abort(404, 'Profil parent non trouvé');
         }
 
-        $enfants = $parent->etudiants()->with(['classe.filiere.niveauEtude', 'user'])->get();
+        // Récupère les étudiants associés au parent via la table pivot parents_etudiants
+        $enfants = $parent->etudiants()
+            ->with(['classe.filiere.niveauEtude', 'user'])
+            ->whereHas('parents', function($query) use ($parent) {
+                $query->where('parents.id', $parent->id);
+            })
+            ->get();
 
         // Pour chaque enfant, récupérer ses statistiques
         foreach ($enfants as $enfant) {

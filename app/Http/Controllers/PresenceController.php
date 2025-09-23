@@ -59,17 +59,19 @@ class PresenceController extends Controller
 
         $validated = $request->validate([
             'presences' => 'required|array',
-            'presences.*' => 'required|in:Present,Retard,Absent'
+            'presences.*.statut' => 'required|in:present,absent,retard',
+            'presences.*.commentaire' => 'nullable|string|max:255'
         ]);
 
-        foreach ($validated['presences'] as $etudiantId => $statut) {
+        foreach ($validated['presences'] as $etudiantId => $data) {
             $presence = Presence::updateOrCreate(
                 [
                     'id_seance_cours' => $seance->id,
                     'id_etudiant' => $etudiantId
                 ],
                 [
-                    'statut_presence' => $statut,
+                    'statut' => $data['statut'],
+                    'commentaire' => $data['commentaire'] ?? null,
                     'date_saisie' => now(),
                     'saisi_par_id_utilisateur' => $user->id,
                     'saisie_dans_delai' => $this->isWithinTimeLimit($seance),
@@ -115,8 +117,9 @@ class PresenceController extends Controller
      */
     private function isWithinTimeLimit(SeanceCours $seance): bool
     {
-        $deadline = Carbon::parse($seance->date_seance . ' ' . $seance->heure_debut)
-            ->addWeeks(2);
+        $dateSeance = Carbon::parse($seance->date_seance);
+        $heureDebut = Carbon::parse($seance->heure_debut)->format('H:i:s');
+        $deadline = $dateSeance->copy()->setTimeFromTimeString($heureDebut)->addWeeks(2);
 
         return now()->lte($deadline);
     }

@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('classe_id')->constrained()->onDelete('restrict');
+            $table->string('numero_etudiant')->unique();
             $table->date('date_naissance');
+            $table->date('date_inscription');
             $table->text('adresse');
             $table->string('telephone');
             $table->boolean('est_actif')->default(true);

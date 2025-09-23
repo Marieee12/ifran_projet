@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClasseController;
 use App\Http\Controllers\CoordinateurController;
 use App\Http\Controllers\EnseignantController;
 use App\Http\Controllers\EmploiTempsController;
@@ -14,57 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Route de test ULTRA SIMPLE pour étudiant
-Route::get('/etudiant-simple', function () {
-    return '<h1>✅ Dashboard Étudiant - Test Simple</h1><p>Si vous voyez ceci, le serveur Laravel fonctionne parfaitement !</p><p><a href="/login">Se connecter</a></p>';
-});
 
-// Route de test pour simuler la connexion
-Route::get('/test-login', function () {
-    $user = \App\Models\User::where('email', 'konejean@gmail.com')->first();
-    if ($user) {
-        Auth::login($user);
-        return '<h1>✅ Test Connexion Réussie</h1>
-               <p>Utilisateur connecté: ' . Auth::user()->email . '</p>
-               <p>Role ID: ' . Auth::user()->role_id . '</p>
-               <p><a href="/etudiant/dashboard">Aller au Dashboard</a></p>
-               <p><a href="/test-dashboard-direct">Dashboard Direct (sans middleware)</a></p>
-               <p><a href="/logout">Se déconnecter</a></p>';
-    }
-    return '<h1>❌ Utilisateur non trouvé</h1>';
-});
-
-// Route de test pour parent
-Route::get('/test-parent-login', function () {
-    $parent = \App\Models\User::where('email', 'parent.test@example.com')->first();
-    if ($parent) {
-        Auth::login($parent);
-        return '<h1>✅ Parent connecté avec succès</h1>
-               <p>Utilisateur: ' . Auth::user()->nom_utilisateur . '</p>
-               <p>Email: ' . Auth::user()->email . '</p>
-               <p>Role: ' . Auth::user()->role->nom_role . '</p>
-               <p><a href="/parents/dashboard">Aller au Dashboard Parent</a></p>
-               <p><a href="/logout">Se déconnecter</a></p>';
-    }
-    return '<h1>❌ Utilisateur parent non trouvé</h1>';
-});
-
-// Dashboard étudiant DIRECT sans middleware pour test
-Route::get('/test-dashboard-direct', function () {
-    $user = \App\Models\User::where('email', 'konejean@gmail.com')->with('etudiant')->first();
-
-    if (!$user || !$user->etudiant) {
-        return '<h1>❌ Étudiant non trouvé</h1>';
-    }
-
-    $etudiant = $user->etudiant;
-
-    // Statistiques simples
-    $totalSeances = \App\Models\SeanceCours::count();
-    $totalAbsences = \App\Models\Absence::where('id_etudiant', $etudiant->id)->count();
-    $totalPresences = \App\Models\Presence::where('id_etudiant', $etudiant->id)->count();
-
-});
 
 // Route de diagnostic pour comprendre les problèmes d'authentification
 Route::get('/debug-auth', function () {
@@ -237,6 +188,29 @@ Route::middleware(['auth', 'role:coordinateur pédagogique'])->prefix('coordinat
     Route::delete('/cours/{cours}', [CoordinateurController::class, 'deleteCours'])->name('coordinateur.cours.delete');
 });
 
+// Routes pour la gestion des classes
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('classes')->group(function () {
+        Route::get('/', [ClasseController::class, 'index'])->name('classes.index');
+        Route::get('/create', [ClasseController::class, 'create'])->name('classes.create');
+        Route::post('/', [ClasseController::class, 'store'])->name('classes.store');
+        Route::get('/{classe}', [ClasseController::class, 'show'])->name('classes.show');
+        Route::get('/{classe}/edit', [ClasseController::class, 'edit'])->name('classes.edit');
+        Route::put('/{classe}', [ClasseController::class, 'update'])->name('classes.update');
+        Route::delete('/{classe}', [ClasseController::class, 'destroy'])->name('classes.destroy');
+    });
+});
+
+// Routes pour la gestion des présences
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('presences')->name('presences.')->group(function () {
+        Route::get('/{seance}', [PresenceController::class, 'show'])->name('show');
+        Route::post('/{seance}', [PresenceController::class, 'store'])->name('store');
+        Route::get('/{seance}/edit', [PresenceController::class, 'edit'])->name('edit');
+        Route::put('/{seance}', [PresenceController::class, 'update'])->name('update');
+    });
+});
+
 Route::middleware(['auth', 'role:administrateur'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
@@ -250,6 +224,10 @@ Route::middleware(['auth', 'role:administrateur'])->group(function () {
     // Formulaire d'assignation parent-étudiants
     Route::get('/admin/parents/assign', [App\Http\Controllers\ParentController::class, 'showAssignForm'])->name('parents.assign.form');
     Route::post('/admin/parents/assign', [App\Http\Controllers\ParentController::class, 'assign'])->name('parents.assign');
+
+    // Routes pour l'assignation étudiant
+    Route::get('/admin/etudiants/assign', [App\Http\Controllers\EtudiantController::class, 'showAssignForm'])->name('etudiants.assign.form');
+    Route::post('/admin/etudiants/assign', [App\Http\Controllers\EtudiantController::class, 'assign'])->name('etudiants.assign');
 
     // Autres routes admin existantes
     Route::get('/utilisateur/create', [App\Http\Controllers\DashboardUserController::class, 'create'])->name('dashboard.utilisateur.create');
@@ -296,35 +274,7 @@ Route::middleware(['auth', 'role:parent'])->prefix('parents')->group(function ()
     Route::get('/notifications', [App\Http\Controllers\ParentController::class, 'notifications'])->name('parent.notifications');
 });
 
-// Route de test simple sans middleware
-Route::get('/test-etudiant', function() {
-    return response()->json([
-        'message' => 'Test simple sans middleware',
-        'authenticated' => Auth::check(),
-        'user' => Auth::user(),
-        'timestamp' => now()
-    ]);
-});
 
-// Route de test pour déboguer le middleware parent
-Route::get('/test-parent-middleware', function() {
-    return response()->json([
-        'message' => 'Test middleware parent',
-        'authenticated' => Auth::check(),
-        'user' => Auth::user() ? [
-            'id' => Auth::user()->id,
-            'email' => Auth::user()->email,
-            'role_id' => Auth::user()->role_id,
-            'role_name' => Auth::user()->role ? Auth::user()->role->nom_role : 'No role'
-        ] : null
-    ]);
-})->middleware(['auth', 'role:parent']);
-
-// Route de test SANS middleware pour tester le ParentController
-Route::get('/test-parent-controller', [App\Http\Controllers\ParentController::class, 'test'])->middleware(['auth']);
-
-// Route de test avec prefix parents et middleware
-Route::get('/parents/test-prefix', [App\Http\Controllers\ParentController::class, 'test'])->middleware(['auth', 'role:parent']);
 
 // Route de debug pour voir les redirections
 Route::get('/debug-auth', function() {

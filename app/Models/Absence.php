@@ -14,7 +14,7 @@ class Absence extends Model
     protected $fillable = [
         'id_seance_cours',
         'id_etudiant',
-        'statut_presence',
+        'statut',
         'date_saisie',
         'saisi_par_id_utilisateur'
     ];
@@ -23,10 +23,10 @@ class Absence extends Model
         'date_saisie' => 'datetime'
     ];
 
-    // Scope pour récupérer seulement les absences (statut_presence = 'Absent')
+    // Scope pour récupérer seulement les absences (statut = 'Absent')
     public function scopeAbsent($query)
     {
-        return $query->where('statut_presence', 'Absent');
+        return $query->where('statut', 'Absent');
     }
 
     public function seanceCours()
