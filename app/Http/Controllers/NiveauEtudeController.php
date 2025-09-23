@@ -34,6 +34,12 @@ class NiveauEtudeController extends Controller
     }
     public function destroy(NiveauEtude $niveauEtude)
     {
+        // Vérifier si le niveau a des classes associées
+        if ($niveauEtude->classes()->count() > 0) {
+            return redirect()->route('niveaux_etude.index')
+                ->with('error', 'Impossible de supprimer ce niveau d\'étude car il contient des classes. Veuillez d\'abord supprimer ou réaffecter les classes associées.');
+        }
+
         $niveauEtude->delete();
         return redirect()->route('niveaux_etude.index')->with('success', 'Niveau d\'étude supprimé !');
     }

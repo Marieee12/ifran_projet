@@ -14,13 +14,13 @@ class Coordinateur extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_utilisateur',
+        'user_id',
         'departement',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_utilisateur');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function seancesCours()

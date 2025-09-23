@@ -28,17 +28,35 @@ class DashboardUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
             'role_id' => ['required', 'exists:roles,id'],
+        ], [
+            'email.unique' => 'Cette adresse email est déjà utilisée par un autre compte.',
+            'email.required' => 'L\'adresse email est obligatoire.',
+            'email.email' => 'Veuillez entrer une adresse email valide.'
         ]);
 
-        $user = User::create([
-            'nom_utilisateur' => strtolower($request->prenom . '.' . $request->nom),
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => $request->role_id,
-            'est_actif' => true
-        ]);
+        try {
+            // Vérifier si l'email existe déjà
+            if (User::where('email', $request->email)->exists()) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['email' => 'Cette adresse email est déjà utilisée.']);
+            }
+
+            $user = User::create([
+                'nom_utilisateur' => strtolower($request->prenom . '.' . $request->nom),
+                'nom' => $request->nom,
+                'prenom' => $request->prenom,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role_id' => $request->role_id,
+                'est_actif' => true,
+                'date_creation' => now()
+            ]);
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->withErrors(['email' => 'Erreur lors de la création de l\'utilisateur. Veuillez réessayer.']);
+        }
 
         // Créer automatiquement le profil selon le rôle
         $role = Role::find($request->role_id);
@@ -68,21 +86,21 @@ class DashboardUserController extends Controller
 
                 case 'Enseignant':
                     \App\Models\Enseignant::create([
-                        'id_utilisateur' => $user->id,
+                        'user_id' => $user->id,
                         'specialite' => 'À définir'
                     ]);
                     break;
 
                 case 'Coordinateur Pédagogique':
                     \App\Models\Coordinateur::create([
-                        'id_utilisateur' => $user->id,
+                        'user_id' => $user->id,
                         'fonction' => 'Coordinateur Pédagogique'
                     ]);
                     break;
 
                 case 'Parent':
                     \App\Models\ParentModel::create([
-                        'id_utilisateur' => $user->id,
+                        'user_id' => $user->id,
                         'telephone' => '0000000000'
                     ]);
                     break;
@@ -93,11 +111,13 @@ class DashboardUserController extends Controller
 
         return redirect()->route('admin.dashboard')->with('success', 'Utilisateur créé avec succès.');
     }
+
     public function list()
     {
-        $users =User::with('role')->get();
+        $users = User::with('role')->get();
         return view('dashboard.list_users', compact('users'));
     }
+
     public function edit(User $user)
     {
         $roles = Role::all();
