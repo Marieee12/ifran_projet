@@ -69,11 +69,67 @@
                 <a href="{{ url()->previous() }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
                     Annuler
                 </a>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                <button type="button" onclick="confirmSubmit()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
                     Enregistrer les présences
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Modal de confirmation -->
+<div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full" style="z-index: 100;">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
+                <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Confirmation de la saisie</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    Êtes-vous sûr de vouloir enregistrer ces présences ?
+                </p>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="confirmButton" class="px-4 py-2 bg-blue-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    Confirmer
+                </button>
+                <button id="cancelButton" class="mt-3 px-4 py-2 bg-gray-100 text-gray-700 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@endsection
+
+@section('scripts')
+<script>
+    function confirmSubmit() {
+        // Afficher le modal
+        document.getElementById('confirmationModal').classList.remove('hidden');
+    }
+
+    // Gérer le bouton de confirmation
+    document.getElementById('confirmButton').addEventListener('click', function() {
+        // Soumettre le formulaire
+        document.querySelector('form').submit();
+    });
+
+    // Gérer le bouton d'annulation
+    document.getElementById('cancelButton').addEventListener('click', function() {
+        // Cacher le modal
+        document.getElementById('confirmationModal').classList.add('hidden');
+    });
+
+    // Fermer le modal si on clique en dehors
+    document.getElementById('confirmationModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.add('hidden');
+        }
+    });
+</script>
 @endsection

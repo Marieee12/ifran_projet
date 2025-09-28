@@ -34,20 +34,21 @@
                     </div>
 
                     <div class="flex space-x-4">
-                        <a href="{{ route('enseignant.seance.presences', $seance->id) }}"
+                        <a href="{{ route('enseignant.seance.presences', ['seance' => $seance->id]) }}"
                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center">
                             <i class="fas fa-clipboard-check mr-2"></i>
                             Marquer les présences
                         </a>
-                        <a href="{{ route('enseignant.seance.presences', ['id' => $seance->id, 'preset' => 'present']) }}"
+                        <a href="{{ route('enseignant.seance.presences', ['seance' => $seance->id, 'preset' => 'present']) }}"
                            class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center">
                             <i class="fas fa-check-double mr-2"></i>
                             Tous présents
                         </a>
-                        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                        <a href="{{ route('enseignant.seance.details', ['seance' => $seance->id]) }}"
+                           class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg transition-colors duration-200 flex items-center">
                             <i class="fas fa-eye mr-2"></i>
                             Voir les détails
-                        </button>
+                        </a>
                     </div>
                 </div>
             @endforeach

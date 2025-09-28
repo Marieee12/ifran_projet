@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\SeanceCours;
 use App\Models\Presence;
 use App\Models\AnneeAcademique;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
@@ -90,33 +91,44 @@ class EnseignantController extends Controller
         }
     }
 
-    public function emploiTemps()
+    public function emploiTemps(Request $request)
     {
         try {
             $user = Auth::user();
             $enseignant = $user->enseignant;
 
+            if (!$enseignant) {
+                return redirect()->route('welcome')->with('error', 'Profil enseignant non trouvé');
+            }
+
             // Récupérer l'année académique actuelle
             $anneeActuelle = AnneeAcademique::where('est_actuelle', true)->first();
 
-            // Récupérer tous les cours de l'enseignant pour l'année en cours
+            if (!$anneeActuelle) {
+                return redirect()->back()->with('error', 'Aucune année académique active trouvée');
+            }
+
+            // Récupérer tous les cours de l'enseignant pour l'année en cours et à venir
             $seances = SeanceCours::where('id_enseignant', $enseignant->id)
                 ->join('classes', 'seances_cours.id_classe', '=', 'classes.id')
                 ->where('classes.id_annee_academique', $anneeActuelle->id)
+                ->whereDate('date_seance', '>=', now()->startOfWeek())
                 ->with(['classe', 'matiere'])
-                ->whereDate('date_seance', '>=', now()->toDateString())
-                ->orderBy('date_seance', 'asc')
-                ->orderBy('heure_debut', 'asc')
+                ->orderBy('date_seance')
+                ->orderBy('heure_debut')
                 ->get();
 
             // Organiser les séances par jour de la semaine
             $planning = [];
-            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            $jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 
             foreach ($seances as $seance) {
-                $dayOfWeek = \Carbon\Carbon::parse($seance->date_seance)->locale('fr')->dayName;
-                $dayOfWeekFr = $jours[\Carbon\Carbon::parse($seance->date_seance)->dayOfWeek - 1];
-                $planning[$dayOfWeekFr][] = $seance;
+                $jourSemaine = Carbon::parse($seance->date_seance)->locale('fr')->dayName;
+                $jourFr = ucfirst($jourSemaine);
+                if (!isset($planning[$jourFr])) {
+                    $planning[$jourFr] = [];
+                }
+                $planning[$jourFr][] = $seance;
             }
 
             return view('dashboard.enseignant.emploi_temps', compact('planning', 'seances'));

@@ -87,4 +87,19 @@ class SeanceCours extends Model
     {
         return $this->hasMany(SeanceCours::class, 'id_seance_precedente');
     }
+
+    public function getDateTimeDebut()
+    {
+        return \Carbon\Carbon::parse($this->date_seance)->setTimeFromTimeString($this->heure_debut);
+    }
+
+    public function getDateHeureLimiteModification()
+    {
+        return $this->getDateTimeDebut()->addWeeks(2);
+    }
+
+    public function peutModifierPresences()
+    {
+        return now()->lte($this->getDateHeureLimiteModification());
+    }
 }

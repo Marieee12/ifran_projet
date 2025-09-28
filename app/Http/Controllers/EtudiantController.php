@@ -113,10 +113,24 @@ class EtudiantController extends Controller
      */
     private function getProchainsCours($etudiant)
     {
-        return SeanceCours::where('id_classe', $etudiant->id_classe)
-            ->where('date_seance', '>=', now())
-            ->where('date_seance', '<=', now()->addDays(7))
-            ->with(['matiere', 'enseignant.user'])
+        $maintenant = now();
+        $finSemaine = $maintenant->copy()->addDays(7);
+
+        return SeanceCours::query()
+            ->where('id_classe', $etudiant->id_classe)
+            ->where(function($query) use ($maintenant, $finSemaine) {
+                $query->where(function($q) use ($maintenant) {
+                    // Cours d'aujourd'hui qui n'ont pas encore commencé
+                    $q->whereDate('date_seance', $maintenant->toDateString())
+                      ->where('heure_debut', '>', $maintenant->format('H:i:s'));
+                })->orWhere(function($q) use ($maintenant, $finSemaine) {
+                    // Cours des 7 prochains jours
+                    $q->whereDate('date_seance', '>', $maintenant->toDateString())
+                      ->whereDate('date_seance', '<=', $finSemaine->toDateString());
+                });
+            })
+            ->where('est_annulee', false)
+            ->with(['matiere', 'enseignant.user', 'classe'])
             ->orderBy('date_seance', 'asc')
             ->orderBy('heure_debut', 'asc')
             ->limit(5)

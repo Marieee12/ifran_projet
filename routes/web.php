@@ -137,6 +137,7 @@ Route::middleware(['auth', 'role:enseignant'])->prefix('enseignants')->group(fun
     Route::get('/seance/{seance}/presences', [PresenceController::class, 'show'])->name('enseignant.seance.presences');
     Route::post('/seance/{seance}/presences', [PresenceController::class, 'store'])->name('enseignant.seance.presences.store');
     Route::get('/statistiques', [StatistiqueController::class, 'dashboard'])->name('enseignant.statistiques');
+    Route::get('/seance/{seance}/details', [PresenceController::class, 'details'])->name('enseignant.seance.details');
 });
 
 // Routes pour le coordinateur

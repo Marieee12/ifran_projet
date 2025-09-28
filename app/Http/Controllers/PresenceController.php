@@ -59,8 +59,7 @@ class PresenceController extends Controller
 
         $validated = $request->validate([
             'presences' => 'required|array',
-            'presences.*.statut' => 'required|in:present,absent,retard',
-            'presences.*.commentaire' => 'nullable|string|max:255'
+            'presences.*.statut' => 'required|in:present,absent,retard'
         ]);
 
         foreach ($validated['presences'] as $etudiantId => $data) {
@@ -70,8 +69,7 @@ class PresenceController extends Controller
                     'id_etudiant' => $etudiantId
                 ],
                 [
-                    'statut' => $data['statut'],
-                    'commentaire' => $data['commentaire'] ?? null,
+                    'statut_presence' => $data['statut'],
                     'date_saisie' => now(),
                     'saisi_par_id_utilisateur' => $user->id,
                     'saisie_dans_delai' => $this->isWithinTimeLimit($seance),
@@ -258,5 +256,27 @@ class PresenceController extends Controller
             });
 
         return view('absences.liste', compact('absences', 'etudiant', 'etudiants'));
+    }
+
+    /**
+     * Afficher les détails d'une séance
+     */
+    public function details(SeanceCours $seance)
+    {
+        $presences = Presence::where('id_seance_cours', $seance->id)
+            ->with(['etudiant.user', 'justificationAbsence'])
+            ->get();
+
+        $totalEtudiants = $seance->classe->etudiants->count();
+
+        $statsPresence = [
+            'presents' => $presences->where('statut_presence', 'present')->count(),
+            'absents' => $presences->where('statut_presence', 'absent')->count(),
+            'retards' => $presences->where('statut_presence', 'retard')->count(),
+        ];
+
+        return view('dashboard.enseignant.seance-details', compact(
+            'seance', 'presences', 'totalEtudiants', 'statsPresence'
+        ));
     }
 }

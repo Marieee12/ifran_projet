@@ -139,8 +139,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     @if(\Carbon\Carbon::parse($seance->date_seance)->isToday() || \Carbon\Carbon::parse($seance->date_seance)->isPast())
                                         @php
-                                            $deuxSemainesApres = \Carbon\Carbon::parse($seance->date_seance . ' ' . $seance->heure_debut)->addWeeks(2);
-                                            $peutModifier = now()->lte($deuxSemainesApres);
+                                            $peutModifier = $seance->peutModifierPresences();
                                         @endphp
 
                                         @if($peutModifier)
