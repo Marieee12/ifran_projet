@@ -21,7 +21,7 @@ class SeanceCoursSeeder extends Seeder
         $coordinateur = Coordinateur::first();
 
         if ($classes->isEmpty() || $matieres->isEmpty() || $enseignants->isEmpty()) {
-            echo "⚠️  Assurez-vous que les classes, matières et enseignants sont créés avant d'exécuter ce seeder.\n";
+            echo "Assurez-vous que les classes, matières et enseignants sont créés avant d'exécuter ce seeder.\n";
             return;
         }
 
@@ -71,7 +71,7 @@ class SeanceCoursSeeder extends Seeder
         // Insérer toutes les séances
         SeanceCours::insert($seances);
 
-        echo "📅 " . count($seances) . " séances de cours créées avec succès !\n";
+        echo "" . count($seances) . " séances de cours créées avec succès !\n";
         echo "Vous pouvez maintenant marquer les présences depuis le tableau de bord des absences.\n";
     }
 }

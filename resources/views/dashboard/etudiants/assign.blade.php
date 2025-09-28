@@ -41,9 +41,12 @@
         </div>
 
         <div>
-            <label for="classe_id" class="block font-medium">Filière</label>
-            <select name="classe_id" id="classe_id" class="border rounded w-full p-2" required disabled>
-                <option value="">Sélectionnez d'abord un niveau</option>
+            <label for="filiere_id" class="block font-medium">Filière</label>
+            <select name="filiere_id" id="filiere_id" class="border rounded w-full p-2" required>
+                <option value="">Sélectionnez une filière</option>
+                @foreach($filieres as $filiere)
+                    <option value="{{ $filiere->id }}">{{ $filiere->nom_filiere }}</option>
+                @endforeach
             </select>
         </div>
 
@@ -95,36 +98,36 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const niveauSelect = document.getElementById('niveau_id');
-    const classeSelect = document.getElementById('classe_id');
-    const classesData = @json($classesParNiveau);
+    const filiereSelect = document.getElementById('filiere_id');
+    const filieres = @json($filieres);
 
-    niveauSelect.addEventListener('change', function() {
-        const niveauId = this.value;
-        classeSelect.innerHTML = '<option value="">Sélectionnez une filière</option>';
+    // Fonction pour mettre à jour les filières
+    function updateFilieres(niveauId) {
+        // Réinitialiser le select des filières
+        filiereSelect.innerHTML = '<option value="">Sélectionnez une filière</option>';
 
-        if (niveauId && classesData[niveauId]) {
-            // Filtrer les filières uniques
-            const filieres = [];
-            classesData[niveauId].forEach(classe => {
-                if (classe.filiere && !filieres.find(f => f.id === classe.filiere.id)) {
-                    filieres.push({
-                        id: classe.id,
-                        nom: classe.filiere.nom_filiere
-                    });
-                }
-            });
-
-            // Ajouter les filières dans le sélecteur
-            filieres.forEach(filiere => {
-                const option = new Option(filiere.nom, filiere.id);
-                classeSelect.add(option);
-            });
-
-            classeSelect.disabled = false;
-        } else {
-            classeSelect.innerHTML = '<option value="">Sélectionnez d\'abord un niveau</option>';
-            classeSelect.disabled = true;
+        if (!niveauId) {
+            filiereSelect.innerHTML = '<option value="">Sélectionnez d\'abord un niveau</option>';
+            filiereSelect.disabled = true;
+            return;
         }
+
+        // Activer le select et ajouter les filières
+        filiereSelect.disabled = false;
+        filieres.forEach(filiere => {
+            const option = document.createElement('option');
+            option.value = filiere.id;
+            option.textContent = filiere.nom_filiere;
+            filiereSelect.appendChild(option);
+        });
+    }
+
+    // Initialiser l'état désactivé
+    filiereSelect.disabled = true;
+
+    // Gérer le changement de niveau
+    niveauSelect.addEventListener('change', function() {
+        updateFilieres(this.value);
     });
 });
 </script>

@@ -17,54 +17,54 @@ Route::get('/', function () {
 
 
 
-// Route de diagnostic pour comprendre les problèmes d'authentification
-Route::get('/debug-auth', function () {
-    $output = '<h1>🔍 Diagnostic d\'Authentification</h1>';
+// // Route de diagnostic pour comprendre les problèmes d'authentification
+// Route::get('/debug-auth', function () {
+//     $output = '<h1> Diagnostic d\'Authentification</h1>';
 
-    // Check si utilisateur connecté
-    if (Auth::check()) {
-        $user = Auth::user();
-        $output .= '<div style="background: #2ecc71; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
-        $output .= '<h3>✅ Utilisateur Connecté</h3>';
-        $output .= '<p><strong>ID:</strong> ' . $user->id . '</p>';
-        $output .= '<p><strong>Email:</strong> ' . $user->email . '</p>';
-        $output .= '<p><strong>Role ID:</strong> ' . $user->role_id . '</p>';
-        $output .= '</div>';
+//     // Check si utilisateur connecté
+//     if (Auth::check()) {
+//         $user = Auth::user();
+//         $output .= '<div style="background: #2ecc71; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
+//         $output .= '<h3> Utilisateur Connecté</h3>';
+//         $output .= '<p><strong>ID:</strong> ' . $user->id . '</p>';
+//         $output .= '<p><strong>Email:</strong> ' . $user->email . '</p>';
+//         $output .= '<p><strong>Role ID:</strong> ' . $user->role_id . '</p>';
+//         $output .= '</div>';
 
-        // Check relation étudiant
-        if ($user->etudiant) {
-            $output .= '<div style="background: #3498db; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
-            $output .= '<h3>🎓 Relation Étudiant OK</h3>';
-            $output .= '<p><strong>Étudiant ID:</strong> ' . $user->etudiant->id . '</p>';
-            $output .= '<p><strong>Numéro:</strong> ' . $user->etudiant->numero_etudiant . '</p>';
-            $output .= '</div>';
-        } else {
-            $output .= '<div style="background: #e74c3c; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
-            $output .= '<h3>❌ Relation Étudiant Manquante</h3>';
-            $output .= '</div>';
-        }
-    } else {
-        $output .= '<div style="background: #e74c3c; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
-        $output .= '<h3>❌ Aucun Utilisateur Connecté</h3>';
-        $output .= '</div>';
-    }
+//         // Check relation étudiant
+//         if ($user->etudiant) {
+//             $output .= '<div style="background: #3498db; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
+//             $output .= '<h3> Relation Étudiant OK</h3>';
+//             $output .= '<p><strong>Étudiant ID:</strong> ' . $user->etudiant->id . '</p>';
+//             $output .= '<p><strong>Numéro:</strong> ' . $user->etudiant->numero_etudiant . '</p>';
+//             $output .= '</div>';
+//         } else {
+//             $output .= '<div style="background: #e74c3c; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
+//             $output .= '<h3>Relation Étudiant Manquante</h3>';
+//             $output .= '</div>';
+//         }
+//     } else {
+//         $output .= '<div style="background: #e74c3c; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
+//         $output .= '<h3>Aucun Utilisateur Connecté</h3>';
+//         $output .= '</div>';
+//     }
 
-    // Session info
-    $output .= '<div style="background: #9b59b6; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
-    $output .= '<h3>🔐 Information Session</h3>';
-    $output .= '<p><strong>Session ID:</strong> ' . session()->getId() . '</p>';
-    $output .= '<p><strong>Token:</strong> ' . session()->token() . '</p>';
-    $output .= '</div>';
+//     // Session info
+//     $output .= '<div style="background: #9b59b6; color: white; padding: 15px; margin: 10px 0; border-radius: 5px;">';
+//     $output .= '<h3>Information Session</h3>';
+//     $output .= '<p><strong>Session ID:</strong> ' . session()->getId() . '</p>';
+//     $output .= '<p><strong>Token:</strong> ' . session()->token() . '</p>';
+//     $output .= '</div>';
 
-    // Actions
-    $output .= '<div style="margin: 20px 0;">';
-    $output .= '<a href="/test-login" style="background: #2ecc71; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px;">🔑 Se connecter</a>';
-    $output .= '<a href="/test-dashboard-direct" style="background: #3498db; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px;">📊 Dashboard Direct</a>';
-    $output .= '<a href="/etudiant/dashboard" style="background: #e67e22; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">🎓 Dashboard Middleware</a>';
-    $output .= '</div>';
+//     // Actions
+//     $output .= '<div style="margin: 20px 0;">';
+//     $output .= '<a href="/test-login" style="background: #2ecc71; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px;">🔑 Se connecter</a>';
+//     $output .= '<a href="/test-dashboard-direct" style="background: #3498db; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px;">📊 Dashboard Direct</a>';
+//     $output .= '<a href="/etudiant/dashboard" style="background: #e67e22; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">🎓 Dashboard Middleware</a>';
+//     $output .= '</div>';
 
-    return $output;
-});
+//     return $output;
+// });
 
 // Route de test pour l'admin (à supprimer après tests)
 Route::get('/test-admin', function() {

@@ -448,6 +448,7 @@ class EtudiantController extends Controller
         $etudiants = \App\Models\Etudiant::with(['user', 'classe.filiere', 'classe.niveauEtude'])->get();
         $niveaux = \App\Models\NiveauEtude::with('classes.filiere')->get();
         $classes = \App\Models\Classe::with(['filiere', 'niveauEtude'])->get()->groupBy('id_niveau_etude');
+        $filieres = \App\Models\Filiere::all();
 
         // Organiser les classes par niveau pour l'affichage
         $classesParNiveau = [];
@@ -455,7 +456,7 @@ class EtudiantController extends Controller
             $classesParNiveau[$niveau->id] = $classes->get($niveau->id, collect());
         }
 
-        return view('dashboard.etudiants.assign', compact('etudiants', 'classesParNiveau', 'niveaux'));
+        return view('dashboard.etudiants.assign', compact('etudiants', 'classesParNiveau', 'niveaux', 'filieres'));
     }
 
     /**
@@ -463,23 +464,46 @@ class EtudiantController extends Controller
      */
     public function assign(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'etudiant_id' => 'required|exists:etudiants,id',
-            'classe_id' => 'required|exists:classes,id',
             'niveau_id' => 'required|exists:niveaux_etude,id',
+            'filiere_id' => 'required|exists:filieres,id',
         ]);
 
-        // Vérifier que la classe appartient bien au niveau sélectionné
-        $classe = \App\Models\Classe::findOrFail($request->classe_id);
-        if ($classe->niveau_etude_id != $request->niveau_id) {
-            return back()->withErrors(['classe_id' => 'La classe sélectionnée ne correspond pas au niveau d\'étude choisi.'])->withInput();
+        try {
+            $etudiant = \App\Models\Etudiant::findOrFail($request->etudiant_id);
+
+            // Vérifier si la classe existe pour ce niveau et cette filière
+            $classe = \App\Models\Classe::where('id_niveau_etude', $request->niveau_id)
+                ->where('id_filiere', $request->filiere_id)
+                ->first();
+
+            if (!$classe) {
+                // Créer la classe si elle n'existe pas
+                $filiere = \App\Models\Filiere::findOrFail($request->filiere_id);
+                $niveau = \App\Models\NiveauEtude::findOrFail($request->niveau_id);
+
+                $classe = \App\Models\Classe::create([
+                    'id_niveau_etude' => $request->niveau_id,
+                    'id_filiere' => $request->filiere_id,
+                    'nom_classe_complet' => $niveau->nom_niveau . ' - ' . $filiere->nom_filiere,
+                    'id_annee_academique' => 1 // Assurez-vous d'avoir une année académique par défaut
+                ]);
+            }
+
+            // Mettre à jour l'étudiant
+            $etudiant->classe_id = $classe->id;
+            $etudiant->save();
+
+            return redirect()->route('etudiants.assign.form')
+                ->with('success', 'Étudiant assigné avec succès à ' . $classe->nom_classe_complet);
+
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'message' => 'Une erreur est survenue lors de l\'assignation : ' . $e->getMessage()
+            ])->withInput();
         }
 
-        $etudiant = \App\Models\Etudiant::findOrFail($request->etudiant_id);
-        $etudiant->classe_id = $request->classe_id;
-        $etudiant->niveau_etude_id = $request->niveau_id;
-        $etudiant->save();
 
-        return redirect()->route('etudiants.assign.form')->with('success', 'Étudiant assigné avec succès à la classe et au niveau.');
     }
 }

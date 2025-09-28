@@ -52,20 +52,20 @@ class ParentController extends Controller
             foreach ($enfants as $enfant) {
                 // Compter les absences de cet enfant (presences avec statut 'Absent')
                 $absencesEnfant = \App\Models\Presence::where('id_etudiant', $enfant->id)
-                    ->where('statut', 'Absent')
+                    ->where('statut_presence', 'Absent')
                     ->count();
                 $totalAbsences += $absencesEnfant;
 
                 // Compter les absences non justifiées
                 $absencesNonJustifieesEnfant = \App\Models\Presence::where('id_etudiant', $enfant->id)
-                    ->where('statut', 'Absent')
+                    ->where('statut_presence', 'Absent')
                     ->whereDoesntHave('justificationAbsence')
                     ->count();
                 $absencesNonJustifiees += $absencesNonJustifieesEnfant;
 
                 // Compter les justifications en attente
                 $justificationsEnAttenteEnfant = \App\Models\JustificationAbsence::whereHas('presence', function($query) use ($enfant) {
-                    $query->where('id_etudiant', $enfant->id)->where('statut', 'Absent');
+                    $query->where('id_etudiant', $enfant->id)->where('statut_presence', 'Absent');
                 })->where('statut', 'en_attente')->count();
                 $justificationsEnAttente += $justificationsEnAttenteEnfant;
             }
@@ -91,7 +91,7 @@ class ParentController extends Controller
                 $enfantIds = $enfants->pluck('id');
                 $statistiques['absences_ce_mois'] = Presence::join('seances_cours', 'presences.id_seance_cours', '=', 'seances_cours.id')
                     ->whereIn('presences.id_etudiant', $enfantIds)
-                    ->where('presences.statut', 'Absent')
+                    ->where('presences.statut_presence', 'Absent')
                     ->whereMonth('seances_cours.date_seance', Carbon::now()->month)
                     ->whereYear('seances_cours.date_seance', Carbon::now()->year)
                     ->count();

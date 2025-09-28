@@ -69,18 +69,15 @@ class DashboardUserController extends Controller
                         // Si aucune classe n'existe, en créer une par défaut
                         $premiereClasse = Classe::create([
                             'nom_classe_complet' => 'Classe par défaut',
-                            'filiere_id' => 1, // Supposons qu'il existe une filière avec ID 1
-                            'niveau_etude_id' => 1, // Supposons qu'il existe un niveau avec ID 1
-                            'annee_academique_id' => 1 // Supposons qu'il existe une année académique avec ID 1
+                            'id_filiere' => 1, // Supposons qu'il existe une filière avec ID 1
+                            'id_niveau_etude' => 1, // Supposons qu'il existe un niveau avec ID 1
+                            'id_annee_academique' => 1 // Supposons qu'il existe une année académique avec ID 1
                         ]);
                     }
 
                     Etudiant::create([
                         'user_id' => $user->id,
                         'classe_id' => $premiereClasse->id,
-                        'date_naissance' => '2000-01-01', // Date par défaut
-                        'adresse' => 'Adresse à compléter',
-                        'telephone' => '0000000000' // Téléphone par défaut
                     ]);
                     break;
 
