@@ -52,7 +52,7 @@
                                         <div class="mt-2 flex space-x-2">
                                             @if(\Carbon\Carbon::parse($seance->date_seance)->isToday() || \Carbon\Carbon::parse($seance->date_seance)->isPast())
                                                 @php
-                                                    $deuxSemainesApres = \Carbon\Carbon::parse($seance->date_seance . ' ' . $seance->heure_debut)->addWeeks(2);
+                                                    $deuxSemainesApres = \Carbon\Carbon::parse($seance->date_seance)->setTimeFromTimeString($seance->heure_debut)->addWeeks(2);
                                                     $peutModifier = now()->lte($deuxSemainesApres);
                                                 @endphp
 
